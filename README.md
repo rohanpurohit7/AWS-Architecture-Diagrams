@@ -1,3 +1,2 @@
 # AWS-Architecture-Diagrams
-Lab Diagrams from AWS Solutions Architect Associate Labs
-Lab Diagrams from AWS Certified Security Specialty
+Lab Diagrams from AWS Solutions Architect Associate Labs, AWS Certified Developer, AWS Certified Security Specialty
