@@ -1,0 +1,68 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/General/Users.puml
+!include AWSPuml/NetworkingContentDelivery/Route53.puml
+!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!include AWSPuml/SecurityIdentityCompliance/WAF.puml
+!include AWSPuml/Compute/EKS.puml
+!include AWSPuml/Database/Aurora.puml
+!include AWSPuml/Database/DynamoDB.puml
+!include AWSPuml/Storage/S3.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+
+left to right direction
+skinparam shadowing false
+
+Users(users, "Global users")
+Route53(r53, "Route 53")
+CloudFront(cf, "CloudFront")
+WAF(waf, "AWS WAF")
+
+rectangle "AWS Account" {
+  rectangle "Region A" {
+    rectangle "VPC 10.10.0.0/16" {
+      rectangle "AZ-a" {
+        rectangle "Public subnet" {
+          EKS(eksa, "EKS ingress and services")
+        }
+        rectangle "Private data subnet" {
+          Aurora(auroraa, "Aurora writer / reader")
+        }
+      }
+    }
+    DynamoDB(ddba, "DynamoDB Global Table")
+    S3(s3a, "Regional S3 data")
+  }
+
+  rectangle "Region B" {
+    rectangle "VPC 10.20.0.0/16" {
+      rectangle "AZ-b" {
+        rectangle "Public subnet" {
+          EKS(eksb, "EKS ingress and services")
+        }
+        rectangle "Private data subnet" {
+          Aurora(aurorab, "Aurora secondary region")
+        }
+      }
+    }
+    DynamoDB(ddbb, "DynamoDB Global Table")
+    S3(s3b, "Regional S3 data")
+  }
+
+  CloudWatch(cw, "CloudWatch / alarms")
+}
+
+users --> r53
+r53 --> cf
+cf --> waf
+waf --> eksa
+waf --> eksb
+eksa --> auroraa
+eksb --> aurorab
+auroraa <--> aurorab
+ddba <--> ddbb
+s3a <--> s3b
+cw .. eksa
+cw .. eksb
+@enduml
