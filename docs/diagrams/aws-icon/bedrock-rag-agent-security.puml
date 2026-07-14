@@ -1,0 +1,48 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/General/Users.puml
+!include AWSPuml/NetworkingContentDelivery/APIGateway.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/ArtificialIntelligence/Bedrock.puml
+!include AWSPuml/Storage/S3.puml
+!include AWSPuml/Database/OpenSearchService.puml
+!include AWSPuml/SecurityIdentityCompliance/Cognito.puml
+!include AWSPuml/SecurityIdentityCompliance/KMS.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/ApplicationIntegration/StepFunctions.puml
+
+left to right direction
+skinparam shadowing false
+Users(users, "Authorized users")
+Cognito(cognito, "Amazon Cognito")
+APIGateway(api, "API Gateway")
+
+rectangle "AWS Account" {
+  rectangle "Application VPC" {
+    rectangle "Private application subnets" {
+      Lambda(orchestrator, "Prompt and tool orchestrator")
+      StepFunctions(sfn, "Approval workflow")
+    }
+    rectangle "Private data subnets" {
+      OpenSearchService(vector, "Vector index")
+    }
+  }
+  Bedrock(bedrock, "Amazon Bedrock / Guardrails")
+  S3(knowledge, "Approved knowledge corpus")
+  KMS(kms, "KMS encryption")
+  CloudWatch(cw, "Model and application telemetry")
+}
+
+users --> cognito
+cognito --> api
+api --> orchestrator
+orchestrator --> bedrock
+orchestrator --> vector
+knowledge --> vector
+bedrock --> sfn
+kms .. knowledge
+kms .. vector
+orchestrator ..> cw
+bedrock ..> cw
+@enduml
