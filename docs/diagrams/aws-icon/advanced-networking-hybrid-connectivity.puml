@@ -1,0 +1,27 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/AWSCommon.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/DirectConnect.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/TransitGateway.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/SiteToSiteVPN.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/NetworkFirewall.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/NATGateway.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/VPC.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ManagementGovernance/CloudWatch.puml
+DirectConnect(dx, "Direct Connect", "primary hybrid path")
+SiteToSiteVPN(vpn, "Site-to-Site VPN", "resilient backup")
+TransitGateway(tgw, "Transit Gateway", "hub routing")
+VPC(inspect, "Inspection VPC", "centralized security")
+NetworkFirewall(nfw, "Network Firewall", "traffic inspection")
+NATGateway(nat, "NAT Gateway", "controlled egress")
+VPC(prod, "Production VPC", "private workloads")
+VPC(shared, "Shared Services VPC", "DNS and platform services")
+CloudWatch(cw, "CloudWatch", "network telemetry")
+dx --> tgw
+vpn --> tgw
+tgw --> inspect
+inspect --> nfw
+nfw --> nat
+tgw --> prod
+tgw --> shared
+nfw --> cw
+@enduml
