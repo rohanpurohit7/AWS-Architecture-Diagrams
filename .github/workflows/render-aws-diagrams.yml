@@ -14,25 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Java, Graphviz, curl, and jq
+      - name: Install Java and Graphviz
         run: |
           sudo apt-get update
-          sudo apt-get install -y default-jre-headless graphviz curl jq
+          sudo apt-get install -y default-jre-headless graphviz curl
 
-      - name: Download current PlantUML release
+      - name: Download pinned PlantUML renderer
         shell: bash
         run: |
           set -euo pipefail
-          asset_url=$(curl --fail --silent --show-error --location \
-            https://api.github.com/repos/plantuml/plantuml/releases/latest \
-            | jq -r '.assets[] | select(.name | test("^plantuml-[0-9.]+\\.jar$")) | .browser_download_url' \
-            | head -n 1)
-          if [ -z "$asset_url" ] || [ "$asset_url" = "null" ]; then
-            echo "Unable to resolve the latest PlantUML JAR release asset." >&2
-            exit 1
-          fi
+          PLANTUML_VERSION="1.2025.0"
+          PLANTUML_URL="https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar"
+          echo "Downloading PlantUML ${PLANTUML_VERSION}"
           curl --fail --location --retry 3 --retry-delay 2 \
-            -o "$RUNNER_TEMP/plantuml.jar" "$asset_url"
+            -o "$RUNNER_TEMP/plantuml.jar" "$PLANTUML_URL"
           echo "PLANTUML_JAR=$RUNNER_TEMP/plantuml.jar" >> "$GITHUB_ENV"
           java -jar "$RUNNER_TEMP/plantuml.jar" -version
 
