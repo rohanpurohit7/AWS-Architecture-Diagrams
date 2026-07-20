@@ -7,22 +7,22 @@
 !include AWSPuml/ApplicationIntegration/all.puml
 !include AWSPuml/Compute/all.puml
 
-CloudTrail(ct, "CloudTrail", "organization audit activity")
-GuardDuty(gd, "GuardDuty", "threat detections")
-SecurityLake(sl, "Security Lake", "central security data")
-SecurityHub(sh, "Security Hub", "finding aggregation")
-Detective(det, "Detective", "investigation context")
-OpenSearchService(os, "OpenSearch", "search and SIEM views")
-EventBridge(eb, "EventBridge", "finding routing")
-Lambda(fn, "Security Enrichment", "triage and enrichment")
-SimpleNotificationService(sns, "SNS", "human alerts")
+CloudTrail(svc01, "CloudTrail", "AWS CloudTrail", "Organization audit activity")
+GuardDuty(svc02, "GuardDuty", "Amazon GuardDuty", "Managed threat detections")
+SecurityLake(svc03, "Security Lake", "Amazon Security Lake", "Central security data")
+SecurityHub(svc04, "Security Hub", "AWS Security Hub", "Finding aggregation")
+Detective(svc05, "Detective", "Amazon Detective", "Investigation context")
+OpenSearchService(svc06, "OpenSearch", "Amazon OpenSearch Service", "Search and SIEM views")
+EventBridge(svc07, "EventBridge", "Amazon EventBridge", "Finding routing")
+Lambda(svc08, "Security Enrichment", "AWS Lambda", "Triage and enrichment")
+SimpleNotificationService(svc09, "SNS", "Amazon SNS", "Human notifications")
 
-ct --> sl
-gd --> sh
-sh --> det
-sh --> eb
-eb --> fn
-fn --> sns
-sl --> os
-sh --> os
+svc01 --> svc03
+svc02 --> svc04
+svc04 --> svc05
+svc04 --> svc07
+svc07 --> svc08
+svc08 --> svc09
+svc03 --> svc06
+svc04 --> svc06
 @enduml
