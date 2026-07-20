@@ -1,30 +1,25 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/ArtificialIntelligence/Bedrock.puml
-!include AWSPuml/ApplicationIntegration/EventBridge.puml
-!include AWSPuml/ApplicationIntegration/StepFunctions.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/Database/DynamoDB.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
 EventBridge(ev,"Security and Ops Events","event intake")
-StepFunctions(sf,"Step Functions","workflow orchestration")
-Bedrock(model,"Amazon Bedrock","reasoning and summarization")
-Lambda(triage,"Triage Agent","read-only enrichment")
-Lambda(remediation,"Remediation Advisor","recommendations")
-Lambda(tool,"Bounded Tool Adapter","allowlisted actions")
-SimpleStorageService(s3,"Approved Runbooks","governed knowledge")
-DynamoDB(state,"Case State","workflow context")
-CloudWatch(cw,"CloudWatch","audit and telemetry")
+StepFunctions(sf,"Step Functions","agent workflow orchestration")
+Lambda(supervisor,"Lambda","Bedrock supervisor adapter")
+Lambda(triage,"Lambda","triage agent adapter")
+Lambda(remediation,"Lambda","remediation advisor adapter")
+SimpleStorageService(runbooks,"S3","approved runbooks and knowledge")
+DynamoDB(state,"DynamoDB","case and approval state")
+CloudWatch(cw,"CloudWatch","agent and tool audit telemetry")
 ev --> sf
-sf --> triage
-sf --> remediation
-triage --> model
-remediation --> model
-triage --> s3
-remediation --> tool
-tool --> state
+sf --> supervisor
+supervisor --> triage
+supervisor --> remediation
+triage --> runbooks
+remediation --> state
 sf --> cw
 @enduml
