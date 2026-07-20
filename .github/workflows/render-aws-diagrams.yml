@@ -2,6 +2,13 @@ name: Render AWS Architecture Diagrams
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'AWS-Enterprise-Architecture-Handbook/docs/diagrams/aws-diagrams/**'
+      - 'AWS-Enterprise-Architecture-Handbook/scripts/render_aws_diagrams.py'
+      - '.github/workflows/render-aws-diagrams.yml'
 
 permissions:
   contents: write
@@ -25,6 +32,21 @@ jobs:
           sudo apt-get install -y graphviz
           python -m pip install --upgrade pip
           pip install diagrams==0.24.4
+
+      - name: Validate Python diagram imports
+        run: |
+          python - <<'PY'
+          from diagrams import Diagram, Cluster, Edge
+          from diagrams.aws.compute import Lambda
+          from diagrams.aws.integration import Eventbridge, SQS, StepFunctions
+          from diagrams.aws.database import Dynamodb
+          from diagrams.aws.storage import S3
+          from diagrams.aws.management import Cloudwatch
+          from diagrams.aws.network import APIGateway, TransitGateway, VPC, NATGateway
+          from diagrams.aws.security import Cloudtrail, Guardduty, SecurityHub, NetworkFirewall
+          from diagrams.aws.analytics import ElasticsearchService
+          print('AWS diagram imports validated successfully')
+          PY
 
       - name: Render professional AWS architecture diagrams
         run: python AWS-Enterprise-Architecture-Handbook/scripts/render_aws_diagrams.py
