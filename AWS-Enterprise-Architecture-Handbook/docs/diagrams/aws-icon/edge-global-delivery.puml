@@ -1,22 +1,28 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/ApplicationIntegration/all.puml
-!include AWSPuml/Compute/all.puml
-!include AWSPuml/Storage/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/SecurityIdentityCompliance/WAF.puml
+!include AWSPuml/NetworkingContentDelivery/APIGateway.puml
+!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!include AWSPuml/NetworkingContentDelivery/Route53.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
 left to right direction
-WAF(waf,"AWS WAF")
-APIGateway(apiA,"Regional API A")
-APIGateway(apiB,"Regional API B")
-Lambda(appA,"Application Region A")
-Lambda(appB,"Application Region B")
-SimpleStorageService(s3,"Static Assets")
-CloudWatch(cw,"Health and Alarms")
+Route53(r53,"Route 53","global DNS")
+CloudFront(cf,"CloudFront","edge delivery")
+WAF(waf,"AWS WAF","web protection")
+APIGateway(apiA,"Regional API A","primary region")
+APIGateway(apiB,"Regional API B","secondary region")
+Lambda(appA,"Application Region A","compute")
+Lambda(appB,"Application Region B","compute")
+SimpleStorageService(s3,"S3 Static Assets","origin content")
+CloudWatch(cw,"CloudWatch","health and alarms")
+r53 --> cf
+cf --> waf
 waf --> apiA
 waf --> apiB
-waf --> s3
+cf --> s3
 apiA --> appA
 apiB --> appB
 appA --> cw
