@@ -6,21 +6,23 @@
 !include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-APIGateway(entry,"API Gateway","application entry")
-Lambda(primary,"Lambda","primary Region application")
-Lambda(recovery,"Lambda","recovery Region application")
-DynamoDB(dataPrimary,"DynamoDB","primary data")
-DynamoDB(dataRecovery,"DynamoDB","replicated recovery data")
-SimpleStorageService(objectsPrimary,"S3","primary objects")
-SimpleStorageService(objectsRecovery,"S3","replicated objects")
-CloudWatch(cw,"CloudWatch","health and recovery telemetry")
-entry --> primary
-entry --> recovery
-primary --> dataPrimary
-recovery --> dataRecovery
-dataPrimary <--> dataRecovery
-objectsPrimary <--> objectsRecovery
-primary --> cw
-recovery --> cw
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "Application Entry", "regional service entry")
+Lambda(fn, "Recovery Application", "warm standby compute")
+EventBridge(bus, "Recovery Events", "failover event routing")
+SimpleQueueService(q, "Recovery Queue", "buffer and retry")
+StepFunctions(sf, "DR Workflow", "failover orchestration")
+DynamoDB(db, "Recovery State", "replicated application state")
+SimpleStorageService(s3, "Recovery Objects", "replicated object storage")
+CloudWatch(cw, "Recovery Telemetry", "health and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
 @enduml
