@@ -3,7 +3,6 @@
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/Compute/all.puml
 !include AWSPuml/Containers/all.puml
 !include AWSPuml/Database/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
@@ -18,15 +17,15 @@ title Secure Multi-AZ AWS Application Architecture
 
 Route53(route53, "Route 53", "DNS")
 CloudFront(cloudfront, "CloudFront", "Edge cache")
-WebApplicationFirewall(waf, "AWS WAF", "Layer 7 protection")
+WAF(waf, "AWS WAF", "Layer 7 protection")
 
 package "AWS Account" {
   package "AWS Region" {
     package "VPC 10.20.0.0/16" {
-      InternetGateway(igw, "Internet Gateway", "Public ingress")
-      ElasticLoadBalancing(alb, "Application Load Balancer", "Public subnets")
-      NATGateway(natA, "NAT Gateway A", "AZ-a egress")
-      NATGateway(natB, "NAT Gateway B", "AZ-b egress")
+      VPCInternetGateway(igw, "Internet Gateway", "Public ingress")
+      ElasticLoadBalancingApplicationLoadBalancer(alb, "Application Load Balancer", "Public subnets")
+      VPCNATGateway(natA, "NAT Gateway A", "AZ-a egress")
+      VPCNATGateway(natB, "NAT Gateway B", "AZ-b egress")
 
       package "Availability Zone A" {
         package "Public subnet 10.20.0.0/24" {
@@ -37,7 +36,7 @@ package "AWS Account" {
           ElasticKubernetesService(eksA, "EKS workloads", "Pod replicas")
         }
         package "Isolated data subnet 10.20.20.0/24" {
-          RelationalDatabaseService(rdsA, "Aurora/RDS", "Writer/reader")
+          RDS(rdsA, "Aurora/RDS", "Writer/reader")
         }
       }
 
@@ -49,7 +48,7 @@ package "AWS Account" {
           ElasticKubernetesService(eksB, "EKS workloads", "Pod replicas")
         }
         package "Isolated data subnet 10.20.21.0/24" {
-          RelationalDatabaseService(rdsB, "Aurora/RDS", "Standby/reader")
+          RDS(rdsB, "Aurora/RDS", "Standby/reader")
         }
       }
 
