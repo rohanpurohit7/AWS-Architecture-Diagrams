@@ -1,0 +1,26 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+left to right direction
+KinesisDataStreams(kds,"Kinesis Data Streams")
+ManagedStreamingForApacheKafka(msk,"Amazon MSK")
+SecurityLake(sl,"Amazon Security Lake")
+SimpleStorageService(s3,"S3 Data Lake")
+Glue(glue,"Glue Catalog and ETL")
+OpenSearchService(os,"OpenSearch SIEM")
+SecurityHub(sh,"Security Hub")
+Detective(det,"Detective")
+CloudWatch(cw,"CloudWatch")
+kds --> sl
+msk --> s3
+sl --> glue
+s3 --> glue
+glue --> os
+os --> sh
+sh --> det
+glue --> cw
+@enduml
