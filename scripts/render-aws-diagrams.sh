@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-HANDBOOK_ROOT="AWS-Enterprise-Architecture-Handbook"
-SOURCE_DIR="$HANDBOOK_ROOT/docs/diagrams/aws-icon"
-OUTPUT_DIR="$HANDBOOK_ROOT/docs/diagrams/rendered"
+SOURCE_DIR="docs/diagrams/aws-icon"
+OUTPUT_DIR="docs/diagrams/rendered"
+GALLERY="docs/diagrams/README.md"
 
 mkdir -p "$OUTPUT_DIR"
 
@@ -12,7 +12,7 @@ if [[ -n "${PLANTUML_JAR:-}" && -f "${PLANTUML_JAR}" ]]; then
 elif command -v plantuml >/dev/null 2>&1; then
   PLANTUML_CMD=(plantuml)
 else
-  echo "PlantUML is required. Set PLANTUML_JAR or install a current PlantUML release." >&2
+  echo "PlantUML is required. Set PLANTUML_JAR or install PlantUML." >&2
   exit 1
 fi
 
@@ -23,10 +23,12 @@ if (( ${#diagrams[@]} == 0 )); then
   exit 1
 fi
 
+rm -f "$OUTPUT_DIR"/*.svg
 failures=()
+
 for diagram in "${diagrams[@]}"; do
   echo "Rendering $diagram"
-  if ! "${PLANTUML_CMD[@]}" -tsvg -o "$(realpath --relative-to="$(dirname "$diagram")" "$OUTPUT_DIR")" "$diagram"; then
+  if ! "${PLANTUML_CMD[@]}" -failfast2 -tsvg -o "$(realpath --relative-to="$(dirname "$diagram")" "$OUTPUT_DIR")" "$diagram"; then
     failures+=("$diagram")
   fi
 done
@@ -37,12 +39,12 @@ if (( ${#failures[@]} > 0 )); then
   exit 1
 fi
 
-cat > "$HANDBOOK_ROOT/docs/diagrams/README.md" <<'EOF'
+cat > "$GALLERY" <<'EOF'
 # AWS Architecture Diagram Gallery
 
-Rendered SVG previews are the primary presentation format for this handbook. PlantUML files are retained as editable architecture-as-code sources.
+Rendered SVG previews are the primary presentation format. PlantUML files are retained as editable architecture-as-code sources.
 
-> If you are browsing on GitHub, use this gallery or open the rendered SVG files rather than opening `.puml` files directly.
+> On GitHub, open the SVG preview or this gallery rather than the `.puml` source when you want to view the architecture.
 
 EOF
 
@@ -59,7 +61,7 @@ for svg in "$OUTPUT_DIR"/*.svg; do
       echo "[Editable PlantUML source](aws-icon/$name.puml)"
       echo
     fi
-  } >> "$HANDBOOK_ROOT/docs/diagrams/README.md"
+  } >> "$GALLERY"
 done
 
 echo "Rendered ${#diagrams[@]} SVG diagrams into $OUTPUT_DIR"
