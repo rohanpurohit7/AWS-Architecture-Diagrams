@@ -19,13 +19,13 @@ package "AWS Organization" {
   package "Workload Accounts" {
     CloudTrail(cloudtrail, "CloudTrail", "API activity")
     GuardDuty(guardduty, "GuardDuty", "Threat findings")
-    WebApplicationFirewall(waf, "AWS WAF", "Web telemetry")
+    WAF(waf, "AWS WAF", "Web telemetry")
   }
 
   package "Security Tooling Account" {
     EventBridge(eventbridge, "EventBridge", "Finding routing")
     KinesisDataStreams(kinesis, "Kinesis Data Streams", "Streaming ingestion")
-    ManagedStreamingForApacheKafka(msk, "Amazon MSK", "Kafka event backbone")
+    ManagedStreamingforApacheKafka(msk, "Amazon MSK", "Kafka event backbone")
     Glue(glue, "AWS Glue", "ETL and catalog")
     SimpleStorageService(lake, "Amazon S3", "Security data lake")
     SecurityLake(securitylake, "Amazon Security Lake", "OCSF security data")
