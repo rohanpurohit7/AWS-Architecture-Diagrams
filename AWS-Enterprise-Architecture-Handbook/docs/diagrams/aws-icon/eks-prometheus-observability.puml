@@ -1,15 +1,15 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/Containers/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/ApplicationIntegration/all.puml
-!include AWSPuml/Storage/all.puml
+!include AWSPuml/Containers/ElasticKubernetesService.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/ApplicationIntegration/SimpleNotificationService.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
 left to right direction
-ElasticKubernetesService(eks,"Amazon EKS")
-CloudWatch(cw,"CloudWatch Metrics and Logs")
-SimpleNotificationService(sns,"SNS Alert Routing")
-SimpleStorageService(s3,"Long-term Log Archive")
+ElasticKubernetesService(eks,"Amazon EKS","container workloads")
+CloudWatch(cw,"CloudWatch","metrics and logs")
+SimpleNotificationService(sns,"Amazon SNS","alert routing")
+SimpleStorageService(s3,"Amazon S3","long-term log archive")
 eks --> cw
 cw --> sns
 cw --> s3
