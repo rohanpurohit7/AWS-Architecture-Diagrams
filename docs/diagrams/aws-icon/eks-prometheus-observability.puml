@@ -1,13 +1,11 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/Compute/EKS.puml
-!include AWSPuml/ManagementGovernance/ManagedServiceForPrometheus.puml
-!include AWSPuml/ManagementGovernance/ManagedGrafana.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/ApplicationIntegration/SNS.puml
-!include AWSPuml/SecurityIdentityCompliance/IAMIdentityCenter.puml
-!include AWSPuml/Storage/S3.puml
+!include AWSPuml/Containers/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Storage/all.puml
 
 left to right direction
 skinparam shadowing false
@@ -16,14 +14,14 @@ rectangle "Workload Account" {
   rectangle "Region" {
     rectangle "VPC 10.30.0.0/16" {
       rectangle "Private subnets across AZ-a and AZ-b" {
-        EKS(eks, "Amazon EKS")
+        ElasticKubernetesService(eks, "Amazon EKS")
       }
     }
-    ManagedServiceForPrometheus(amp, "Amazon Managed Service for Prometheus")
+    ManagedServiceforPrometheus(amp, "Amazon Managed Service for Prometheus")
     ManagedGrafana(amg, "Amazon Managed Grafana")
     CloudWatch(cw, "CloudWatch metrics and logs")
-    SNS(sns, "SNS alert routing")
-    S3(s3, "Long-term log archive")
+    SimpleNotificationService(sns, "SNS alert routing")
+    SimpleStorageService(s3, "Long-term log archive")
   }
 }
 idc --> amg
