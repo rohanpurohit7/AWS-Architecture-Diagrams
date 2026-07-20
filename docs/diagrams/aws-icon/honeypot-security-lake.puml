@@ -1,52 +1,27 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
-!include AWSPuml/SecurityIdentityCompliance/WAF.puml
-!include AWSPuml/Compute/EC2.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/ManagementGovernance/CloudTrail.puml
-!include AWSPuml/Analytics/KinesisDataStreams.puml
-!include AWSPuml/SecurityIdentityCompliance/SecurityLake.puml
-!include AWSPuml/Analytics/OpenSearchService.puml
-!include AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
-!include AWSPuml/SecurityIdentityCompliance/Detective.puml
-
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
-skinparam shadowing false
-CloudFront(cf, "CloudFront")
-WAF(waf, "AWS WAF")
-
-rectangle "Dedicated Deception Account" {
-  rectangle "Honeypot VPC 10.250.0.0/16" {
-    rectangle "Public deception subnet" {
-      EC2(honey1, "Honeypot workload A")
-      EC2(honey2, "Honeypot workload B")
-    }
-    rectangle "No route to production networks" {
-      CloudWatch(cw, "Host and flow telemetry")
-    }
-  }
-  CloudTrail(ct, "CloudTrail")
-}
-
-rectangle "Security Account" {
-  KinesisDataStreams(stream, "Kinesis Data Streams")
-  SecurityLake(lake, "Amazon Security Lake")
-  OpenSearchService(si, "OpenSearch investigations")
-  SecurityHub(hub, "Security Hub")
-  Detective(det, "Amazon Detective")
-}
-
-cf --> waf
+WAF(waf,"AWS WAF")
+Lambda(honey1,"Honeypot Workload A")
+Lambda(honey2,"Honeypot Workload B")
+CloudWatch(cw,"Telemetry")
+KinesisDataStreams(stream,"Kinesis Data Streams")
+SecurityLake(lake,"Amazon Security Lake")
+OpenSearchService(os,"OpenSearch Investigations")
+SecurityHub(hub,"Security Hub")
+Detective(det,"Amazon Detective")
 waf --> honey1
 waf --> honey2
-honey1 ..> cw
-honey2 ..> cw
-ct --> stream
+honey1 --> cw
+honey2 --> cw
 cw --> stream
 stream --> lake
-lake --> si
+lake --> os
 lake --> hub
 hub --> det
 @enduml
