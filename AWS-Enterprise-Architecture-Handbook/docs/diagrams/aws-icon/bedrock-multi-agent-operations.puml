@@ -1,22 +1,23 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/ArtificialIntelligence/all.puml
-!include AWSPuml/ApplicationIntegration/all.puml
-!include AWSPuml/Compute/all.puml
-!include AWSPuml/Database/all.puml
-!include AWSPuml/Storage/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/ArtificialIntelligence/Bedrock.puml
+!include AWSPuml/ApplicationIntegration/EventBridge.puml
+!include AWSPuml/ApplicationIntegration/StepFunctions.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/Database/DynamoDB.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
 left to right direction
-EventBridge(ev,"Security and Ops Events")
-StepFunctions(sf,"Workflow Orchestration")
-Bedrock(model,"Amazon Bedrock")
-Lambda(triage,"Triage Agent")
-Lambda(remediation,"Remediation Advisor")
-Lambda(tool,"Bounded Tool Adapter")
-SimpleStorageService(s3,"Approved Runbooks")
-DynamoDB(state,"Case State")
-CloudWatch(cw,"Audit and Telemetry")
+EventBridge(ev,"Security and Ops Events","event intake")
+StepFunctions(sf,"Step Functions","workflow orchestration")
+Bedrock(model,"Amazon Bedrock","reasoning and summarization")
+Lambda(triage,"Triage Agent","read-only enrichment")
+Lambda(remediation,"Remediation Advisor","recommendations")
+Lambda(tool,"Bounded Tool Adapter","allowlisted actions")
+SimpleStorageService(s3,"Approved Runbooks","governed knowledge")
+DynamoDB(state,"Case State","workflow context")
+CloudWatch(cw,"CloudWatch","audit and telemetry")
 ev --> sf
 sf --> triage
 sf --> remediation
