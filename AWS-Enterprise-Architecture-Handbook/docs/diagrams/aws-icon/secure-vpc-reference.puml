@@ -4,25 +4,23 @@
 !include AWSPuml/NetworkingContentDelivery/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/ApplicationIntegration/all.puml
-!include AWSPuml/Compute/all.puml
-!include AWSPuml/Database/all.puml
-!include AWSPuml/Storage/all.puml
-left to right direction
-VirtualPrivateCloud(vpc,"Application VPC","multi-AZ private workload network")
-NetworkFirewall(fw,"Network Firewall","central inspection")
-VPCNATGateway(nat,"NAT Gateway","controlled egress")
-APIGateway(api,"API Gateway","application ingress")
-Lambda(app,"Lambda","private application tier")
-DynamoDB(db,"DynamoDB","application state")
-SimpleStorageService(logs,"S3","central logs")
-CloudTrail(trail,"CloudTrail","API audit")
-CloudWatch(cw,"CloudWatch","metrics and alarms")
-api --> app
-app --> db
-app --> fw
-fw --> nat
-vpc --> app
-trail --> logs
-cw --> logs
+
+DirectConnect(dx, "Private Entry", "approved application ingress")
+SitetoSiteVPN(vpn, "Backup Entry", "resilient alternate path")
+TransitGateway(tgw, "Transit Gateway", "central routing")
+VirtualPrivateCloud(inspect, "Secure VPC", "multi-AZ workload network")
+NetworkFirewall(nfw, "Network Firewall", "central inspection")
+VPCNATGateway(nat, "NAT Gateway", "controlled egress")
+VirtualPrivateCloud(prod, "Application Tier", "private workloads")
+VirtualPrivateCloud(shared, "Data Tier", "isolated application data")
+CloudWatch(cw, "CloudWatch", "network telemetry")
+
+dx --> tgw
+vpn --> tgw
+tgw --> inspect
+inspect --> nfw
+nfw --> nat
+tgw --> prod
+tgw --> shared
+nfw --> cw
 @enduml
