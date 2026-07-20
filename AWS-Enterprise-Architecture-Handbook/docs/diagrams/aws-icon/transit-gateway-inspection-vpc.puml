@@ -1,32 +1,23 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
-!include AWSPuml/NetworkingContentDelivery/VirtualPrivateCloud.puml
-!include AWSPuml/NetworkingContentDelivery/VPCNATGateway.puml
-!include AWSPuml/SecurityIdentityCompliance/NetworkFirewall.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/Storage/all.puml
 left to right direction
-TransitGateway(tgw,"Transit Gateway","central routing")
-VirtualPrivateCloud(appvpc,"Application VPC","private workloads")
-VirtualPrivateCloud(datavpc,"Data VPC","private analytics")
-VirtualPrivateCloud(inspect,"Inspection VPC","centralized security")
-NetworkFirewall(nfwa,"Network Firewall AZ-a","stateful inspection")
-NetworkFirewall(nfwb,"Network Firewall AZ-b","stateful inspection")
-VPCNATGateway(nata,"NAT Gateway AZ-a","egress")
-VPCNATGateway(natb,"NAT Gateway AZ-b","egress")
-CloudWatch(cw,"CloudWatch","firewall metrics and alarms")
-SimpleStorageService(logs,"Amazon S3","central firewall logs")
-appvpc --> tgw
-datavpc --> tgw
+VirtualPrivateCloud(app,"Application VPC","private workloads")
+VirtualPrivateCloud(data,"Data VPC","private analytics workloads")
+TransitGateway(tgw,"Transit Gateway","central routing hub")
+VirtualPrivateCloud(inspect,"Inspection VPC","central security boundary")
+NetworkFirewall(fw,"Network Firewall","stateful inspection")
+VPCNATGateway(nat,"NAT Gateway","controlled egress")
+CloudWatch(cw,"CloudWatch","network and firewall telemetry")
+SimpleStorageService(logs,"S3","central firewall logs")
+app --> tgw
+data --> tgw
 tgw --> inspect
-inspect --> nfwa
-inspect --> nfwb
-nfwa --> nata
-nfwb --> natb
-nfwa --> logs
-nfwb --> logs
-cw --> nfwa
-cw --> nfwb
+inspect --> fw
+fw --> nat
+fw --> cw
+fw --> logs
 @enduml
