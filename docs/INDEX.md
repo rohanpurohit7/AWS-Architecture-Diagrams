@@ -18,6 +18,9 @@
 - `diagrams/aws-icon/bedrock-multi-agent-operations.puml`
 - `diagrams/aws-icon/security-analytics-lakehouse.puml`
 - `diagrams/aws-icon/sa-pro-disaster-recovery.puml`
+- `diagrams/aws-icon/edge-global-delivery.puml`
+- `diagrams/aws-icon/serverless-data-lake-analytics.puml`
+- `diagrams/aws-icon/hybrid-dns-private-connectivity.puml`
 
 ## Reference Architecture Articles
 
@@ -35,6 +38,9 @@
 - `reference-architectures/bedrock-multi-agent-operations.md`
 - `reference-architectures/security-analytics-lakehouse.md`
 - `reference-architectures/sa-pro-disaster-recovery.md`
+- `reference-architectures/edge-global-delivery.md`
+- `reference-architectures/serverless-data-lake-analytics.md`
+- `reference-architectures/hybrid-dns-private-connectivity.md`
 
 ## Visual Runbooks and Validation
 
@@ -49,6 +55,18 @@
 - `runbooks/bedrock-agent-safety-validation.md`
 - `runbooks/security-analytics-pipeline-validation.md`
 - `runbooks/disaster-recovery-game-day.md`
+- `runbooks/edge-global-delivery-validation.md`
+- `runbooks/serverless-data-lake-validation.md`
+- `runbooks/hybrid-dns-private-connectivity-validation.md`
+
+## Diagram Rendering Automation
+
+- Source diagrams: `docs/diagrams/aws-icon/*.puml`
+- Rendered output: `docs/diagrams/rendered/`
+- Local render script: `scripts/render-aws-diagrams.sh`
+- GitHub Actions workflow: `.github/workflows/render-aws-diagrams.yml`
+
+The workflow is configured to regenerate SVG previews whenever AWS-icon PlantUML sources change, and the local script provides the same render path for manual development environments with PlantUML and Graphviz installed.
 
 ## Certification Alignment
 
@@ -56,8 +74,10 @@
 - Secure multi-AZ application
 - Multi-account landing zone
 - Global multi-region active-active
+- Edge/global delivery
 - Disaster recovery and game-day validation
 - Transit Gateway inspection
+- Serverless data lake and analytics
 
 ### Security Specialty
 - Central SOC
@@ -65,15 +85,20 @@
 - Honeypot and Security Lake
 - Security analytics lakehouse
 - Agentic security operations controls
+- WAF/Shield edge protection
+- Central logging and encrypted analytics
 
 ### Advanced Networking
 - Secure VPC foundation
 - Transit Gateway inspection VPC
 - Hybrid Direct Connect/VPN connectivity
 - PrivateLink service access
+- Route 53 Resolver hybrid DNS
+- Edge routing with Route 53 and Global Accelerator
 
 ### Developer
 - Event-driven serverless platform
+- Serverless data ingestion and processing
 - EKS observability
 - Bedrock application and agent integration
 
@@ -83,14 +108,16 @@
 2. Multi-account landing zone.
 3. Zero Trust identity and private access.
 4. Transit Gateway and centralized inspection.
-5. Hybrid connectivity and PrivateLink.
-6. Event-driven application architecture.
-7. Central SOC and Security Lake.
-8. Security analytics lakehouse with KNN/ensemble detection.
-9. Honeypot and deception architecture.
-10. EKS observability with Prometheus/Grafana.
-11. Bedrock RAG and multi-agent security operations.
-12. Global multi-region resilience and DR game day.
+5. Hybrid connectivity, DNS, and PrivateLink.
+6. Edge/global delivery and multi-region routing.
+7. Event-driven application architecture.
+8. Serverless data lake and analytics.
+9. Central SOC and Security Lake.
+10. Security analytics lakehouse with KNN/ensemble detection.
+11. Honeypot and deception architecture.
+12. EKS observability with Prometheus/Grafana.
+13. Bedrock RAG and multi-agent security operations.
+14. Global multi-region resilience and DR game day.
 
 ## Architecture Standard
 
