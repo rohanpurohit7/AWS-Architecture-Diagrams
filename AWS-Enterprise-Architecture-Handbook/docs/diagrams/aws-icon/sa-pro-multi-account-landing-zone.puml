@@ -1,19 +1,23 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/Storage/all.puml
-!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/ManagementGovernance/Organizations.puml
+!include AWSPuml/ManagementGovernance/ControlTower.puml
+!include AWSPuml/ManagementGovernance/CloudTrail.puml
+!include AWSPuml/SecurityIdentityCompliance/IAMIdentityCenter.puml
+!include AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
+!include AWSPuml/SecurityIdentityCompliance/GuardDuty.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
+!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
 left to right direction
-Organizations(orgs,"AWS Organizations")
-ControlTower(ct,"AWS Control Tower")
-IAMIdentityCenter(sso,"IAM Identity Center")
-SecurityHub(sh,"Security Hub")
-GuardDuty(gd,"GuardDuty")
-CloudTrail(trail,"Organization CloudTrail")
-SimpleStorageService(logs,"Central Log Archive")
-TransitGateway(tgw,"Transit Gateway")
+Organizations(orgs,"AWS Organizations","multi-account governance")
+ControlTower(ct,"AWS Control Tower","landing zone")
+IAMIdentityCenter(sso,"IAM Identity Center","workforce access")
+SecurityHub(sh,"Security Hub","finding aggregation")
+GuardDuty(gd,"GuardDuty","threat detection")
+CloudTrail(trail,"CloudTrail","organization audit")
+SimpleStorageService(logs,"Amazon S3","central log archive")
+TransitGateway(tgw,"Transit Gateway","network hub")
 rectangle "Management Account" { orgs; ct; sso }
 rectangle "Security Account" { sh; gd }
 rectangle "Log Archive Account" { trail; logs }
