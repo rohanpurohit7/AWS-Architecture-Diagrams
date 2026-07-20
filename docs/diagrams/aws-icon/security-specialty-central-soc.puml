@@ -1,0 +1,31 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/AWSCommon.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ManagementGovernance/CloudTrail.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/SecurityIdentityCompliance/GuardDuty.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/SecurityIdentityCompliance/SecurityHub.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/SecurityIdentityCompliance/Detective.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/Analytics/SecurityLake.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/Analytics/OpenSearchService.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ApplicationIntegration/EventBridge.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/Compute/Lambda.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ApplicationIntegration/SNS.puml
+
+CloudTrail(ct, "CloudTrail", "organization trail")
+GuardDuty(gd, "GuardDuty", "threat detections")
+SecurityLake(sl, "Security Lake", "OCSF data lake")
+SecurityHub(sh, "Security Hub", "finding aggregation")
+Detective(det, "Detective", "investigation")
+OpenSearchService(os, "OpenSearch", "search and SIEM views")
+EventBridge(eb, "EventBridge", "finding routing")
+Lambda(fn, "Lambda", "enrichment and response")
+SNS(sns, "SNS", "human notification")
+
+ct --> sl
+gd --> sh
+sh --> det
+sh --> eb
+eb --> fn
+fn --> sns
+sl --> os
+sh --> os
+@enduml
