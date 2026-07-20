@@ -1,20 +1,23 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/Storage/all.puml
+!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
+!include AWSPuml/NetworkingContentDelivery/VirtualPrivateCloud.puml
+!include AWSPuml/NetworkingContentDelivery/VPCNATGateway.puml
+!include AWSPuml/SecurityIdentityCompliance/NetworkFirewall.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
 left to right direction
-TransitGateway(tgw,"Transit Gateway")
-VirtualPrivateCloud(appvpc,"Application VPC")
-VirtualPrivateCloud(datavpc,"Data VPC")
-VirtualPrivateCloud(inspect,"Inspection VPC")
-NetworkFirewall(nfwa,"Network Firewall AZ-a")
-NetworkFirewall(nfwb,"Network Firewall AZ-b")
-VPCNATGateway(nata,"NAT Gateway AZ-a")
-VPCNATGateway(natb,"NAT Gateway AZ-b")
-CloudWatch(cw,"Firewall metrics and alarms")
-SimpleStorageService(logs,"Central firewall logs")
+TransitGateway(tgw,"Transit Gateway","central routing")
+VirtualPrivateCloud(appvpc,"Application VPC","private workloads")
+VirtualPrivateCloud(datavpc,"Data VPC","private analytics")
+VirtualPrivateCloud(inspect,"Inspection VPC","centralized security")
+NetworkFirewall(nfwa,"Network Firewall AZ-a","stateful inspection")
+NetworkFirewall(nfwb,"Network Firewall AZ-b","stateful inspection")
+VPCNATGateway(nata,"NAT Gateway AZ-a","egress")
+VPCNATGateway(natb,"NAT Gateway AZ-b","egress")
+CloudWatch(cw,"CloudWatch","firewall metrics and alarms")
+SimpleStorageService(logs,"Amazon S3","central firewall logs")
 appvpc --> tgw
 datavpc --> tgw
 tgw --> inspect
