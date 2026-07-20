@@ -1,0 +1,29 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+left to right direction
+Organizations(orgs,"AWS Organizations")
+ControlTower(ct,"AWS Control Tower")
+IAMIdentityCenter(sso,"IAM Identity Center")
+SecurityHub(sh,"Security Hub")
+GuardDuty(gd,"GuardDuty")
+CloudTrail(trail,"Organization CloudTrail")
+SimpleStorageService(logs,"Central Log Archive")
+TransitGateway(tgw,"Transit Gateway")
+rectangle "Management Account" { orgs; ct; sso }
+rectangle "Security Account" { sh; gd }
+rectangle "Log Archive Account" { trail; logs }
+rectangle "Network Account" { tgw }
+rectangle "Workload OUs" as workloads
+sso --> orgs
+ct --> orgs
+orgs --> sh
+orgs --> trail
+trail --> logs
+orgs --> tgw
+orgs --> workloads
+@enduml
