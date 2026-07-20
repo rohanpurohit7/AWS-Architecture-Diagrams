@@ -7,33 +7,23 @@
 !include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/SecurityIdentityCompliance/all.puml
-
 left to right direction
-EventBridge(ev,"Security / Ops Events")
+EventBridge(ev,"Security and Ops Events")
 StepFunctions(sf,"Workflow Orchestration")
-BedrockAgentCore(supervisor,"Supervisor Agent")
-BedrockAgentCore(triage,"Triage Agent")
-BedrockAgentCore(remediation,"Remediation Advisor")
-Bedrock(kb,"Bedrock Knowledge Layer")
+Bedrock(model,"Amazon Bedrock")
+Lambda(triage,"Triage Agent")
+Lambda(remediation,"Remediation Advisor")
+Lambda(tool,"Bounded Tool Adapter")
 SimpleStorageService(s3,"Approved Runbooks")
-Lambda(tool,"Bounded Tool Adapter / MCP Gateway")
 DynamoDB(state,"Case State")
-Bedrock(model,"Foundation Model")
-CloudWatch(cw,"CloudWatch / Audit")
-KeyManagementService(kms,"KMS")
-
+CloudWatch(cw,"Audit and Telemetry")
 ev --> sf
-sf --> supervisor
-supervisor --> triage
-supervisor --> remediation
-triage --> kb
-kb --> s3
+sf --> triage
+sf --> remediation
 triage --> model
 remediation --> model
-supervisor --> tool
+triage --> s3
+remediation --> tool
 tool --> state
-supervisor --> cw
-s3 --> kms
-state --> kms
+sf --> cw
 @enduml
