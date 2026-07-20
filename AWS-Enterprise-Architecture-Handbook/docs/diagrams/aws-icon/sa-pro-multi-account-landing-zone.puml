@@ -3,19 +3,26 @@
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/Storage/all.puml
-!include AWSPuml/NetworkingContentDelivery/all.puml
-left to right direction
-CloudTrail(trail,"CloudTrail","organization audit trail")
-GuardDuty(gd,"GuardDuty","threat detection")
-SecurityHub(sh,"Security Hub","central finding aggregation")
-SimpleStorageService(logs,"S3","central log archive")
-TransitGateway(tgw,"Transit Gateway","shared network hub")
-VirtualPrivateCloud(prod,"Production VPC","production workloads")
-VirtualPrivateCloud(nonprod,"Non-production VPC","development workloads")
-trail --> logs
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+
+CloudTrail(ct, "Organization Audit", "central account activity")
+GuardDuty(gd, "GuardDuty", "organization threat detection")
+SecurityLake(sl, "Log Archive", "central security evidence")
+SecurityHub(sh, "Security Hub", "finding aggregation")
+Detective(det, "Investigation", "security context")
+OpenSearchService(os, "Operations Search", "central operational views")
+EventBridge(eb, "Account Events", "governance event routing")
+Lambda(fn, "Account Automation", "landing zone automation")
+SimpleNotificationService(sns, "Governance Alerts", "operator notification")
+
+ct --> sl
 gd --> sh
-prod --> tgw
-nonprod --> tgw
-tgw --> sh
+sh --> det
+sh --> eb
+eb --> fn
+fn --> sns
+sl --> os
+sh --> os
 @enduml
