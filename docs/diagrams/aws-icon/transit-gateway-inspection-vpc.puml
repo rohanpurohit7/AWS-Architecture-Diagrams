@@ -1,13 +1,10 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
-!include AWSPuml/NetworkingContentDelivery/NetworkFirewall.puml
-!include AWSPuml/NetworkingContentDelivery/NATGateway.puml
-!include AWSPuml/NetworkingContentDelivery/InternetGateway.puml
-!include AWSPuml/NetworkingContentDelivery/VirtualPrivateCloudVPC.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/Storage/S3.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/Storage/all.puml
 
 left to right direction
 skinparam shadowing false
@@ -23,26 +20,26 @@ rectangle "AWS Organization" {
         NetworkFirewall(nfwb, "AWS Network Firewall")
       }
       rectangle "Egress subnet AZ-a" {
-        NATGateway(nata, "NAT Gateway")
+        VPCNATGateway(nata, "NAT Gateway")
       }
       rectangle "Egress subnet AZ-b" {
-        NATGateway(natb, "NAT Gateway")
+        VPCNATGateway(natb, "NAT Gateway")
       }
-      InternetGateway(igw, "Internet Gateway")
+      VPCInternetGateway(igw, "Internet Gateway")
     }
     CloudWatch(cw, "Firewall metrics and alarms")
-    S3(logs, "Central firewall logs")
+    SimpleStorageService(logs, "Central firewall logs")
   }
 
   rectangle "Production Account" {
     rectangle "Application VPC 10.10.0.0/16" {
-      VirtualPrivateCloudVPC(appvpc, "Private application subnets")
+      VirtualPrivateCloud(appvpc, "Private application subnets")
     }
   }
 
   rectangle "Data Account" {
     rectangle "Data VPC 10.20.0.0/16" {
-      VirtualPrivateCloudVPC(datavpc, "Private analytics subnets")
+      VirtualPrivateCloud(datavpc, "Private analytics subnets")
     }
   }
 }
