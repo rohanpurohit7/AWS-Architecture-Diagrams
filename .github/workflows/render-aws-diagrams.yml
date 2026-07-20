@@ -41,9 +41,9 @@ jobs:
           from diagrams.aws.integration import Eventbridge, SQS, StepFunctions
           from diagrams.aws.database import Dynamodb
           from diagrams.aws.storage import S3
-          from diagrams.aws.management import Cloudwatch
-          from diagrams.aws.network import APIGateway, TransitGateway, VPC, NATGateway
-          from diagrams.aws.security import Cloudtrail, Guardduty, SecurityHub, NetworkFirewall
+          from diagrams.aws.management import Cloudtrail, Cloudwatch
+          from diagrams.aws.network import APIGateway, TransitGateway, VPC, NATGateway, NetworkFirewall
+          from diagrams.aws.security import Guardduty, SecurityHub
           from diagrams.aws.analytics import ElasticsearchService
           print('AWS diagram imports validated successfully')
           PY
