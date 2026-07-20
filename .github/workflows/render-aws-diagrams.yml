@@ -14,37 +14,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Java and Graphviz
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Graphviz and AWS diagram renderer
         run: |
           sudo apt-get update
-          sudo apt-get install -y default-jre-headless graphviz curl
+          sudo apt-get install -y graphviz
+          python -m pip install --upgrade pip
+          pip install diagrams==0.24.4
 
-      - name: Download pinned PlantUML renderer
-        shell: bash
-        run: |
-          set -euo pipefail
-          PLANTUML_VERSION="1.2025.0"
-          PLANTUML_URL="https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar"
-          echo "Downloading PlantUML ${PLANTUML_VERSION}"
-          curl --fail --location --retry 3 --retry-delay 2 \
-            -o "$RUNNER_TEMP/plantuml.jar" "$PLANTUML_URL"
-          echo "PLANTUML_JAR=$RUNNER_TEMP/plantuml.jar" >> "$GITHUB_ENV"
-          java -jar "$RUNNER_TEMP/plantuml.jar" -version
-
-      - name: Render AWS-icon PlantUML sources to SVG
-        run: bash AWS-Enterprise-Architecture-Handbook/scripts/render-aws-diagrams.sh
+      - name: Render professional AWS architecture diagrams
+        run: python AWS-Enterprise-Architecture-Handbook/scripts/render_aws_diagrams.py
 
       - name: Validate rendered outputs
         shell: bash
         run: |
           set -euo pipefail
           ROOT="AWS-Enterprise-Architecture-Handbook"
-          source_count=$(find "$ROOT/docs/diagrams/aws-icon" -maxdepth 1 -type f -name '*.puml' | wc -l)
-          svg_count=$(find "$ROOT/docs/diagrams/rendered" -maxdepth 1 -type f -name '*.svg' | wc -l)
-          echo "PlantUML source count: $source_count"
-          echo "Rendered SVG count: $svg_count"
+          source_count=$(find "$ROOT/docs/diagrams/aws-diagrams" -maxdepth 1 -type f -name '*.py' | wc -l)
+          png_count=$(find "$ROOT/docs/diagrams/rendered" -maxdepth 1 -type f -name '*.png' | wc -l)
+          echo "Python architecture source count: $source_count"
+          echo "Rendered PNG count: $png_count"
           test "$source_count" -gt 0
-          test "$svg_count" -eq "$source_count"
+          test "$png_count" -eq "$source_count"
           test -f "$ROOT/docs/diagrams/README.md"
 
       - name: Commit rendered diagrams
@@ -57,6 +52,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No rendered diagram changes to commit."
           else
-            git commit -m "docs: render AWS architecture SVG previews [skip ci]"
+            git commit -m "docs: render AWS architecture diagrams [skip ci]"
             git push
           fi
