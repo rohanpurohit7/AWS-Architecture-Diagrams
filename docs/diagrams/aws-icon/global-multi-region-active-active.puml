@@ -1,66 +1,31 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/General/all.puml
-!include AWSPuml/NetworkingContentDelivery/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/Containers/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
 !include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-
 left to right direction
-skinparam shadowing false
-
-Users(users, "Global users")
-Route53(r53, "Route 53")
-CloudFront(cf, "CloudFront")
-WAF(waf, "AWS WAF")
-
-rectangle "AWS Account" {
-  rectangle "Region A" {
-    rectangle "VPC 10.10.0.0/16" {
-      rectangle "AZ-a" {
-        rectangle "Public subnet" {
-          ElasticKubernetesService(eksa, "EKS ingress and services")
-        }
-        rectangle "Private data subnet" {
-          Aurora(auroraa, "Aurora writer / reader")
-        }
-      }
-    }
-    DynamoDB(ddba, "DynamoDB Global Table")
-    SimpleStorageService(s3a, "Regional S3 data")
-  }
-
-  rectangle "Region B" {
-    rectangle "VPC 10.20.0.0/16" {
-      rectangle "AZ-b" {
-        rectangle "Public subnet" {
-          ElasticKubernetesService(eksb, "EKS ingress and services")
-        }
-        rectangle "Private data subnet" {
-          Aurora(aurorab, "Aurora secondary region")
-        }
-      }
-    }
-    DynamoDB(ddbb, "DynamoDB Global Table")
-    SimpleStorageService(s3b, "Regional S3 data")
-  }
-
-  CloudWatch(cw, "CloudWatch / alarms")
-}
-
-users --> r53
-r53 --> cf
-cf --> waf
-waf --> eksa
-waf --> eksb
-eksa --> auroraa
-eksb --> aurorab
-auroraa <--> aurorab
-ddba <--> ddbb
-s3a <--> s3b
-cw .. eksa
-cw .. eksb
+WAF(waf,"AWS WAF")
+APIGateway(apiA,"Regional API A")
+APIGateway(apiB,"Regional API B")
+Lambda(appA,"Application Region A")
+Lambda(appB,"Application Region B")
+DynamoDB(ddbA,"DynamoDB Region A")
+DynamoDB(ddbB,"DynamoDB Region B")
+SimpleStorageService(s3A,"S3 Region A")
+SimpleStorageService(s3B,"S3 Region B")
+CloudWatch(cw,"CloudWatch Health")
+waf --> apiA
+waf --> apiB
+apiA --> appA
+apiB --> appB
+appA --> ddbA
+appB --> ddbB
+ddbA <--> ddbB
+s3A <--> s3B
+appA --> cw
+appB --> cw
 @enduml
