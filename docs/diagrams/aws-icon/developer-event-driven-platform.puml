@@ -1,18 +1,17 @@
 @startuml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/AWSCommon.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/APIGateway.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/Compute/Lambda.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ApplicationIntegration/EventBridge.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ApplicationIntegration/SQS.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ApplicationIntegration/StepFunctions.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/Database/DynamoDB.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/Storage/SimpleStorageService.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ManagementGovernance/CloudWatch.puml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 
 APIGateway(api, "API Gateway", "REST entry")
 Lambda(fn, "Lambda", "request handler")
 EventBridge(bus, "EventBridge", "domain events")
-SQS(q, "SQS", "buffer and retry")
+SimpleQueueService(q, "SQS", "buffer and retry")
 StepFunctions(sf, "Step Functions", "workflow")
 DynamoDB(db, "DynamoDB", "application state")
 SimpleStorageService(s3, "S3", "documents and objects")
