@@ -6,7 +6,13 @@ on:
     branches: [ master ]
     paths:
       - 'docs/**'
+      - 'reference-architectures/**'
+      - 'diagrams/**'
+      - 'runbooks/**'
+      - 'templates/**'
+      - 'notebooks/**'
       - 'scripts/**'
+      - 'INDEX.md'
       - 'AWS-Enterprise-Architecture-Handbook/**'
       - '.github/workflows/render-aws-diagrams.yml'
 
@@ -26,25 +32,42 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y plantuml graphviz rsync
 
-      - name: Sync authored artifacts into canonical handbook root
+      - name: Consolidate authored artifacts into canonical handbook root
         run: |
-          mkdir -p AWS-Enterprise-Architecture-Handbook/docs
-          mkdir -p AWS-Enterprise-Architecture-Handbook/scripts
-          rsync -a docs/ AWS-Enterprise-Architecture-Handbook/docs/
-          rsync -a scripts/ AWS-Enterprise-Architecture-Handbook/scripts/
+          ROOT="AWS-Enterprise-Architecture-Handbook"
+          mkdir -p "$ROOT/docs" "$ROOT/scripts"
+
+          [ -d docs ] && rsync -a docs/ "$ROOT/docs/" || true
+          [ -d reference-architectures ] && rsync -a reference-architectures/ "$ROOT/reference-architectures/" || true
+          [ -d diagrams ] && rsync -a diagrams/ "$ROOT/diagrams/" || true
+          [ -d runbooks ] && rsync -a runbooks/ "$ROOT/runbooks/" || true
+          [ -d templates ] && rsync -a templates/ "$ROOT/templates/" || true
+          [ -d notebooks ] && rsync -a notebooks/ "$ROOT/notebooks/" || true
+          [ -d scripts ] && rsync -a scripts/ "$ROOT/scripts/" || true
+          [ -f INDEX.md ] && cp INDEX.md "$ROOT/LEGACY_ROOT_INDEX.md" || true
 
       - name: Render AWS-icon PlantUML sources to SVG
         run: bash scripts/render-aws-diagrams.sh
 
       - name: Validate rendered outputs
         run: |
-          test -d AWS-Enterprise-Architecture-Handbook/docs/diagrams/rendered
-          count=$(find AWS-Enterprise-Architecture-Handbook/docs/diagrams/rendered -type f -name '*.svg' | wc -l)
+          ROOT="AWS-Enterprise-Architecture-Handbook"
+          test -d "$ROOT/docs/diagrams/rendered"
+          count=$(find "$ROOT/docs/diagrams/rendered" -type f -name '*.svg' | wc -l)
           echo "Rendered SVG count: $count"
           if [ "$count" -lt 1 ]; then
             echo "No SVG diagrams were rendered." >&2
             exit 1
           fi
+
+      - name: Verify canonical content placement
+        run: |
+          ROOT="AWS-Enterprise-Architecture-Handbook"
+          test -f "$ROOT/README.md"
+          test -d "$ROOT/docs/reference-architectures"
+          test -d "$ROOT/docs/runbooks"
+          test -d "$ROOT/docs/diagrams/aws-icon"
+          test -f "$ROOT/docs/diagrams/README.md"
 
       - name: Commit canonical handbook sync and rendered diagrams
         run: |
@@ -54,6 +77,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No handbook changes to commit."
           else
-            git commit -m "docs: sync handbook and render AWS architecture previews [skip ci]"
+            git commit -m "docs: consolidate handbook and render AWS architecture previews [skip ci]"
             git push
           fi
