@@ -3,16 +3,26 @@
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/ApplicationIntegration/all.puml
 !include AWSPuml/Compute/all.puml
-!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-APIGateway(access,"API Gateway","identity-aware application entry")
-Lambda(authz,"Lambda","authorization and policy evaluation")
-VirtualPrivateCloud(private,"Private Application VPC","private service boundary")
-CloudTrail(trail,"CloudTrail","access audit trail")
-CloudWatch(cw,"CloudWatch","access telemetry and alarms")
-access --> authz
-authz --> private
-authz --> trail
-authz --> cw
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "Identity-Aware Entry", "governed application access")
+Lambda(fn, "Authorization Service", "policy evaluation")
+EventBridge(bus, "Access Events", "identity event routing")
+SimpleQueueService(q, "Access Review Queue", "buffer and retry")
+StepFunctions(sf, "Approval Workflow", "access orchestration")
+DynamoDB(db, "Access State", "session and decision state")
+SimpleStorageService(s3, "Audit Evidence", "access logs")
+CloudWatch(cw, "Access Telemetry", "metrics and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
 @enduml
