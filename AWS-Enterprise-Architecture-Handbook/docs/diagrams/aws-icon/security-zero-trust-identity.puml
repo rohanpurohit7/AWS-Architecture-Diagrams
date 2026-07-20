@@ -8,21 +8,21 @@
 !include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
 
-APIGateway(api, "Identity-Aware Entry", "governed application access")
-Lambda(fn, "Authorization Service", "policy evaluation")
-EventBridge(bus, "Access Events", "identity event routing")
-SimpleQueueService(q, "Access Review Queue", "buffer and retry")
-StepFunctions(sf, "Approval Workflow", "access orchestration")
-DynamoDB(db, "Access State", "session and decision state")
-SimpleStorageService(s3, "Audit Evidence", "access logs")
-CloudWatch(cw, "Access Telemetry", "metrics and alarms")
+APIGateway(svc01, "Identity-Aware Entry", "Amazon API Gateway", "Governed application access")
+Lambda(svc02, "Authorization Service", "AWS Lambda", "Policy evaluation and authorization")
+EventBridge(svc03, "Access Events", "Amazon EventBridge", "Identity and access event routing")
+SimpleQueueService(svc04, "Access Review Queue", "Amazon SQS", "Buffered access review work")
+StepFunctions(svc05, "Approval Workflow", "AWS Step Functions", "Access orchestration and approvals")
+DynamoDB(svc06, "Access State", "Amazon DynamoDB", "Session and decision state")
+SimpleStorageService(svc07, "Audit Evidence", "Amazon S3", "Access evidence and logs")
+CloudWatch(svc08, "Access Telemetry", "Amazon CloudWatch", "Access metrics and alarms")
 
-api --> fn
-fn --> bus
-bus --> q
-q --> sf
-sf --> db
-sf --> s3
-fn --> cw
-sf --> cw
+svc01 --> svc02
+svc02 --> svc03
+svc03 --> svc04
+svc04 --> svc05
+svc05 --> svc06
+svc05 --> svc07
+svc02 --> svc08
+svc05 --> svc08
 @enduml
