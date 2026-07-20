@@ -1,23 +1,28 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
+!include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/Analytics/all.puml
 !include AWSPuml/ApplicationIntegration/all.puml
 !include AWSPuml/Compute/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-Lambda(honeypot,"Lambda","isolated deception workload")
-CloudWatch(telemetry,"CloudWatch","deception telemetry")
-EventBridge(events,"EventBridge","event routing")
-SecurityLake(lake,"Security Lake","central security data")
-OpenSearchService(search,"OpenSearch","investigation views")
-SecurityHub(hub,"Security Hub","finding aggregation")
-Detective(det,"Detective","investigation context")
-honeypot --> telemetry
-telemetry --> events
-events --> lake
-lake --> search
-lake --> hub
-hub --> det
+
+CloudTrail(ct, "Deception Activity", "honeypot audit events")
+GuardDuty(gd, "Threat Detection", "suspicious activity")
+SecurityLake(sl, "Security Lake", "central deception telemetry")
+SecurityHub(sh, "Security Hub", "finding aggregation")
+Detective(det, "Detective", "investigation context")
+OpenSearchService(os, "OpenSearch", "hunt and investigation")
+EventBridge(eb, "EventBridge", "finding routing")
+Lambda(fn, "Honeypot Processor", "telemetry enrichment")
+SimpleNotificationService(sns, "SNS", "analyst notification")
+
+ct --> sl
+gd --> sh
+sh --> det
+sh --> eb
+eb --> fn
+fn --> sns
+sl --> os
+sh --> os
 @enduml
