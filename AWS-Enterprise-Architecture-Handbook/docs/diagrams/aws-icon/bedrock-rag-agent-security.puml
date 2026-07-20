@@ -1,26 +1,23 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/ArtificialIntelligence/Bedrock.puml
-!include AWSPuml/NetworkingContentDelivery/APIGateway.puml
-!include AWSPuml/ApplicationIntegration/StepFunctions.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/Analytics/OpenSearchService.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/Analytics/all.puml
 left to right direction
-APIGateway(api,"API Gateway","governed API")
-Lambda(orchestrator,"Prompt and Tool Orchestrator","authorization and policy")
-Bedrock(bedrock,"Amazon Bedrock","model inference")
-OpenSearchService(vector,"OpenSearch Vector Index","retrieval")
-SimpleStorageService(knowledge,"Approved Knowledge Corpus","source documents")
-StepFunctions(sfn,"Step Functions","human approval workflow")
-CloudWatch(cw,"CloudWatch","model and app telemetry")
+APIGateway(api,"API Gateway","governed entry point")
+Lambda(orchestrator,"Lambda","Bedrock RAG orchestrator")
+SimpleStorageService(knowledge,"S3","approved knowledge corpus")
+OpenSearchService(search,"OpenSearch","retrieval index")
+StepFunctions(approval,"Step Functions","human approval workflow")
+CloudWatch(cw,"CloudWatch","model and application telemetry")
 api --> orchestrator
-orchestrator --> bedrock
-orchestrator --> vector
-knowledge --> vector
-bedrock --> sfn
+orchestrator --> knowledge
+knowledge --> search
+orchestrator --> search
+orchestrator --> approval
 orchestrator --> cw
-bedrock --> cw
+approval --> cw
 @enduml
