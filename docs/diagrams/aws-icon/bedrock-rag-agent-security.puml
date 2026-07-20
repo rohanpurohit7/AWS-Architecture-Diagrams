@@ -1,47 +1,26 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/General/all.puml
-!include AWSPuml/NetworkingContentDelivery/all.puml
-!include AWSPuml/Compute/all.puml
 !include AWSPuml/ArtificialIntelligence/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
-!include AWSPuml/Analytics/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/ApplicationIntegration/all.puml
-
 left to right direction
-skinparam shadowing false
-Users(users, "Authorized users")
-Cognito(cognito, "Amazon Cognito")
-APIGateway(api, "API Gateway")
-
-rectangle "AWS Account" {
-  rectangle "Application VPC" {
-    rectangle "Private application subnets" {
-      Lambda(orchestrator, "Prompt and tool orchestrator")
-      StepFunctions(sfn, "Approval workflow")
-    }
-    rectangle "Private data subnets" {
-      OpenSearchService(vector, "Vector index")
-    }
-  }
-  Bedrock(bedrock, "Amazon Bedrock / Guardrails")
-  SimpleStorageService(knowledge, "Approved knowledge corpus")
-  KeyManagementService(kms, "KMS encryption")
-  CloudWatch(cw, "Model and application telemetry")
-}
-
-users --> cognito
-cognito --> api
+APIGateway(api,"API Gateway")
+Lambda(orchestrator,"Prompt and Tool Orchestrator")
+Bedrock(bedrock,"Amazon Bedrock")
+OpenSearchService(vector,"Vector Index")
+SimpleStorageService(knowledge,"Approved Knowledge Corpus")
+StepFunctions(sfn,"Approval Workflow")
+CloudWatch(cw,"Model and App Telemetry")
 api --> orchestrator
 orchestrator --> bedrock
 orchestrator --> vector
 knowledge --> vector
 bedrock --> sfn
-kms .. knowledge
-kms .. vector
-orchestrator ..> cw
-bedrock ..> cw
+orchestrator --> cw
+bedrock --> cw
 @enduml
