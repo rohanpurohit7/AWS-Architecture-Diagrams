@@ -1,49 +1,29 @@
-@startuml SecurityDataPlatform
+@startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/ManagementGovernance/CloudTrail.puml
-!include AWSPuml/SecurityIdentityCompliance/GuardDuty.puml
-!include AWSPuml/SecurityIdentityCompliance/WAF.puml
-!include AWSPuml/SecurityIdentityCompliance/SecurityLake.puml
-!include AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
-!include AWSPuml/SecurityIdentityCompliance/Detective.puml
-!include AWSPuml/Analytics/KinesisDataStreams.puml
-!include AWSPuml/Analytics/ManagedStreamingforApacheKafka.puml
-!include AWSPuml/Analytics/Glue.puml
-!include AWSPuml/Analytics/OpenSearchService.puml
-!include AWSPuml/ApplicationIntegration/EventBridge.puml
-!include AWSPuml/ApplicationIntegration/StepFunctions.puml
-!include AWSPuml/ApplicationIntegration/SimpleNotificationService.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
-!include AWSPuml/ArtificialIntelligence/Bedrock.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
-CloudTrail(cloudtrail,"CloudTrail","API activity")
-GuardDuty(guardduty,"GuardDuty","threat findings")
-WAF(waf,"AWS WAF","web telemetry")
-EventBridge(eventbridge,"EventBridge","finding routing")
-KinesisDataStreams(kinesis,"Kinesis Data Streams","streaming ingestion")
-ManagedStreamingforApacheKafka(msk,"Amazon MSK","Kafka event backbone")
-Glue(glue,"AWS Glue","ETL and catalog")
-SimpleStorageService(lake,"Amazon S3","security data lake")
-SecurityLake(securitylake,"Amazon Security Lake","OCSF security data")
-OpenSearchService(opensearch,"Amazon OpenSearch","SIEM and search")
-SecurityHub(securityhub,"Security Hub","finding aggregation")
-Detective(detective,"Amazon Detective","investigation graphs")
-Bedrock(bedrock,"Amazon Bedrock","AI triage and summarization")
-StepFunctions(stepfn,"Step Functions","response orchestration")
-SimpleNotificationService(sns,"Amazon SNS","alerts and approvals")
-cloudtrail --> eventbridge
-guardduty --> eventbridge
-waf --> kinesis
-eventbridge --> kinesis
-kinesis --> msk
-msk --> glue
-glue --> lake
-lake --> securitylake
-securitylake --> opensearch
-securitylake --> securityhub
-securityhub --> detective
-securityhub --> bedrock
-bedrock --> stepfn
-stepfn --> sns
+CloudTrail(trail,"CloudTrail","API activity")
+GuardDuty(gd,"GuardDuty","threat findings")
+EventBridge(events,"EventBridge","finding routing")
+Lambda(enrich,"Lambda","enrichment and triage")
+SecurityLake(lake,"Security Lake","central security data")
+OpenSearchService(search,"OpenSearch","search and SIEM")
+SecurityHub(hub,"Security Hub","finding aggregation")
+Detective(det,"Detective","investigation")
+SimpleStorageService(archive,"S3","long-term evidence archive")
+SimpleNotificationService(alerts,"SNS","human alerts")
+trail --> lake
+gd --> hub
+hub --> events
+events --> enrich
+enrich --> alerts
+lake --> search
+lake --> archive
+hub --> det
 @enduml
