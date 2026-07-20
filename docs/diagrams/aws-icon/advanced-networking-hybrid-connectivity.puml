@@ -1,21 +1,20 @@
 @startuml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/AWSCommon.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/DirectConnect.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/TransitGateway.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/SiteToSiteVPN.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/NetworkFirewall.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/NATGateway.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/NetworkingContentDelivery/VPC.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v20.0/dist/ManagementGovernance/CloudWatch.puml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+
 DirectConnect(dx, "Direct Connect", "primary hybrid path")
-SiteToSiteVPN(vpn, "Site-to-Site VPN", "resilient backup")
+SitetoSiteVPN(vpn, "Site-to-Site VPN", "resilient backup")
 TransitGateway(tgw, "Transit Gateway", "hub routing")
-VPC(inspect, "Inspection VPC", "centralized security")
+VirtualPrivateCloud(inspect, "Inspection VPC", "centralized security")
 NetworkFirewall(nfw, "Network Firewall", "traffic inspection")
-NATGateway(nat, "NAT Gateway", "controlled egress")
-VPC(prod, "Production VPC", "private workloads")
-VPC(shared, "Shared Services VPC", "DNS and platform services")
+VPCNATGateway(nat, "NAT Gateway", "controlled egress")
+VirtualPrivateCloud(prod, "Production VPC", "private workloads")
+VirtualPrivateCloud(shared, "Shared Services VPC", "DNS and platform services")
 CloudWatch(cw, "CloudWatch", "network telemetry")
+
 dx --> tgw
 vpn --> tgw
 tgw --> inspect
