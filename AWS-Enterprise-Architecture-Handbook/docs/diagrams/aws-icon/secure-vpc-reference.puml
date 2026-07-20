@@ -1,59 +1,28 @@
-@startuml SecureVPCReference
+@startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/Route53.puml
-!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
-!include AWSPuml/NetworkingContentDelivery/VirtualPrivateCloud.puml
-!include AWSPuml/NetworkingContentDelivery/VPCNATGateway.puml
-!include AWSPuml/SecurityIdentityCompliance/WAF.puml
-!include AWSPuml/SecurityIdentityCompliance/NetworkFirewall.puml
-!include AWSPuml/Containers/ElasticKubernetesService.puml
-!include AWSPuml/Database/RDS.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/ManagementGovernance/CloudTrail.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
-skinparam backgroundColor #FFFFFF
-skinparam packageStyle rectangle
-skinparam shadowing false
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
 left to right direction
-Route53(route53,"Route 53","DNS")
-CloudFront(cloudfront,"CloudFront","edge cache")
-WAF(waf,"AWS WAF","Layer 7 protection")
-package "AWS Account" {
-  package "AWS Region" {
-    package "VPC 10.20.0.0/16" {
-      VirtualPrivateCloud(vpc,"Amazon VPC","routing and segmentation")
-      NetworkFirewall(firewall,"AWS Network Firewall","inspection")
-      VPCNATGateway(natA,"NAT Gateway A","AZ-a egress")
-      VPCNATGateway(natB,"NAT Gateway B","AZ-b egress")
-      package "Availability Zone A" {
-        package "Public subnet 10.20.0.0/24" { natA }
-        package "Private application subnet 10.20.10.0/24" { ElasticKubernetesService(eksA,"EKS Workloads A","private compute") }
-        package "Isolated data subnet 10.20.20.0/24" { RDS(rdsA,"Amazon RDS Primary","private database") }
-      }
-      package "Availability Zone B" {
-        package "Public subnet 10.20.1.0/24" { natB }
-        package "Private application subnet 10.20.11.0/24" { ElasticKubernetesService(eksB,"EKS Workloads B","private compute") }
-        package "Isolated data subnet 10.20.21.0/24" { RDS(rdsB,"Amazon RDS Standby","private database") }
-      }
-    }
-    CloudWatch(cloudwatch,"CloudWatch","metrics and alarms")
-    CloudTrail(cloudtrail,"CloudTrail","API audit")
-    SimpleStorageService(logs,"Amazon S3","central log archive")
-  }
-}
-route53 --> cloudfront
-cloudfront --> waf
-waf --> eksA
-waf --> eksB
-eksA --> rdsA
-eksB --> rdsB
-eksA --> firewall
-eksB --> firewall
-firewall --> natA
-firewall --> natB
-eksA --> cloudwatch
-eksB --> cloudwatch
-cloudtrail --> logs
-cloudwatch --> logs
+VirtualPrivateCloud(vpc,"Application VPC","multi-AZ private workload network")
+NetworkFirewall(fw,"Network Firewall","central inspection")
+VPCNATGateway(nat,"NAT Gateway","controlled egress")
+APIGateway(api,"API Gateway","application ingress")
+Lambda(app,"Lambda","private application tier")
+DynamoDB(db,"DynamoDB","application state")
+SimpleStorageService(logs,"S3","central logs")
+CloudTrail(trail,"CloudTrail","API audit")
+CloudWatch(cw,"CloudWatch","metrics and alarms")
+api --> app
+app --> db
+app --> fw
+fw --> nat
+vpc --> app
+trail --> logs
+cw --> logs
 @enduml
