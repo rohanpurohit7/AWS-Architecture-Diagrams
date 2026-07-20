@@ -1,20 +1,25 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/Analytics/all.puml
-!include AWSPuml/Storage/all.puml
-!include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/Analytics/KinesisDataStreams.puml
+!include AWSPuml/Analytics/ManagedStreamingforApacheKafka.puml
+!include AWSPuml/Analytics/Glue.puml
+!include AWSPuml/Analytics/OpenSearchService.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
+!include AWSPuml/SecurityIdentityCompliance/SecurityLake.puml
+!include AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
+!include AWSPuml/SecurityIdentityCompliance/Detective.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
 left to right direction
-KinesisDataStreams(kds,"Kinesis Data Streams")
-ManagedStreamingForApacheKafka(msk,"Amazon MSK")
-SecurityLake(sl,"Amazon Security Lake")
-SimpleStorageService(s3,"S3 Data Lake")
-Glue(glue,"Glue Catalog and ETL")
-OpenSearchService(os,"OpenSearch SIEM")
-SecurityHub(sh,"Security Hub")
-Detective(det,"Detective")
-CloudWatch(cw,"CloudWatch")
+KinesisDataStreams(kds,"Kinesis Data Streams","streaming telemetry")
+ManagedStreamingforApacheKafka(msk,"Amazon MSK","Kafka event backbone")
+SecurityLake(sl,"Amazon Security Lake","OCSF security data")
+SimpleStorageService(s3,"Amazon S3","data lake")
+Glue(glue,"AWS Glue","catalog and ETL")
+OpenSearchService(os,"OpenSearch","SIEM and investigation")
+SecurityHub(sh,"Security Hub","finding aggregation")
+Detective(det,"Detective","investigation context")
+CloudWatch(cw,"CloudWatch","pipeline health")
 kds --> sl
 msk --> s3
 sl --> glue
