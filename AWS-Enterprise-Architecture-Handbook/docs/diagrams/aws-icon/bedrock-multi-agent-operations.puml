@@ -8,21 +8,21 @@
 !include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
 
-APIGateway(api, "Agent API", "governed entry")
-Lambda(fn, "Bedrock Supervisor Adapter", "agent orchestration")
-EventBridge(bus, "Security Event Bus", "event intake")
-SimpleQueueService(q, "Agent Work Queue", "buffer and retry")
-StepFunctions(sf, "Approval Workflow", "bounded orchestration")
-DynamoDB(db, "Case State", "agent and approval state")
-SimpleStorageService(s3, "Approved Runbooks", "knowledge source")
-CloudWatch(cw, "Agent Telemetry", "logs and alarms")
+APIGateway(svc01, "Agent API", "Amazon API Gateway", "Governed entry point")
+Lambda(svc02, "Supervisor Adapter", "AWS Lambda", "Bedrock supervisor orchestration adapter")
+EventBridge(svc03, "Security Event Bus", "Amazon EventBridge", "Security and operations event intake")
+SimpleQueueService(svc04, "Agent Work Queue", "Amazon SQS", "Buffered asynchronous work")
+StepFunctions(svc05, "Approval Workflow", "AWS Step Functions", "Bounded orchestration and approvals")
+DynamoDB(svc06, "Case State", "Amazon DynamoDB", "Case and approval state")
+SimpleStorageService(svc07, "Approved Runbooks", "Amazon S3", "Approved knowledge and runbooks")
+CloudWatch(svc08, "Agent Telemetry", "Amazon CloudWatch", "Logs, metrics, and alarms")
 
-api --> fn
-fn --> bus
-bus --> q
-q --> sf
-sf --> db
-sf --> s3
-fn --> cw
-sf --> cw
+svc01 --> svc02
+svc02 --> svc03
+svc03 --> svc04
+svc04 --> svc05
+svc05 --> svc06
+svc05 --> svc07
+svc02 --> svc08
+svc05 --> svc08
 @enduml
