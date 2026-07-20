@@ -4,31 +4,13 @@
 !include AWSPuml/Containers/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/ApplicationIntegration/all.puml
-!include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/Storage/all.puml
-
 left to right direction
-skinparam shadowing false
-IAMIdentityCenter(idc, "IAM Identity Center")
-rectangle "Workload Account" {
-  rectangle "Region" {
-    rectangle "VPC 10.30.0.0/16" {
-      rectangle "Private subnets across AZ-a and AZ-b" {
-        ElasticKubernetesService(eks, "Amazon EKS")
-      }
-    }
-    ManagedServiceforPrometheus(amp, "Amazon Managed Service for Prometheus")
-    ManagedGrafana(amg, "Amazon Managed Grafana")
-    CloudWatch(cw, "CloudWatch metrics and logs")
-    SimpleNotificationService(sns, "SNS alert routing")
-    SimpleStorageService(s3, "Long-term log archive")
-  }
-}
-idc --> amg
-eks --> amp
-amp --> amg
+ElasticKubernetesService(eks,"Amazon EKS")
+CloudWatch(cw,"CloudWatch Metrics and Logs")
+SimpleNotificationService(sns,"SNS Alert Routing")
+SimpleStorageService(s3,"Long-term Log Archive")
 eks --> cw
-cw --> s3
-amp --> sns
 cw --> sns
+cw --> s3
 @enduml
