@@ -1,23 +1,28 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
+!include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/Analytics/all.puml
 !include AWSPuml/ApplicationIntegration/all.puml
 !include AWSPuml/Compute/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-EventBridge(events,"EventBridge","security event routing")
-Lambda(normalize,"Lambda","normalization and enrichment")
-SecurityLake(lake,"Security Lake","governed security data")
-OpenSearchService(search,"OpenSearch","SIEM and investigation")
-SecurityHub(hub,"Security Hub","finding aggregation")
-Detective(det,"Detective","entity investigation")
-CloudWatch(cw,"CloudWatch","pipeline health")
-events --> normalize
-normalize --> lake
-lake --> search
-lake --> hub
-hub --> det
-normalize --> cw
+
+CloudTrail(ct, "Security Telemetry", "organization audit data")
+GuardDuty(gd, "Threat Detection", "managed security findings")
+SecurityLake(sl, "Security Lake", "governed analytics data")
+SecurityHub(sh, "Security Hub", "finding aggregation")
+Detective(det, "Detective", "entity investigation")
+OpenSearchService(os, "OpenSearch", "SIEM and investigation")
+EventBridge(eb, "EventBridge", "finding routing")
+Lambda(fn, "Analytics Processor", "normalization and enrichment")
+SimpleNotificationService(sns, "SNS", "analyst notification")
+
+ct --> sl
+gd --> sh
+sh --> det
+sh --> eb
+eb --> fn
+fn --> sns
+sl --> os
+sh --> os
 @enduml
