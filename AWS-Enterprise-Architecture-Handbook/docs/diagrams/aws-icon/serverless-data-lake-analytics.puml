@@ -1,0 +1,33 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+left to right direction
+KinesisDataStreams(kds,"Kinesis Data Streams")
+EventBridge(eb,"EventBridge")
+Lambda(fn,"Lambda enrichment")
+SimpleStorageService(raw,"S3 raw zone")
+Glue(glue,"Glue catalog and ETL")
+SimpleStorageService(curated,"S3 curated zone")
+Athena(athena,"Athena")
+OpenSearchService(os,"OpenSearch")
+KeyManagementService(kms,"KMS")
+CloudWatch(cw,"CloudWatch")
+kds --> fn
+eb --> fn
+fn --> raw
+raw --> glue
+glue --> curated
+curated --> athena
+curated --> os
+kms .. raw
+kms .. curated
+cw .. fn
+cw .. glue
+cw .. os
+@enduml
