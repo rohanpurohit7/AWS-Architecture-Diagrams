@@ -1,0 +1,40 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/ArtificialIntelligence/Bedrock.puml
+!includeurl AWSPuml/ArtificialIntelligence/BedrockAgents.puml
+!includeurl AWSPuml/ArtificialIntelligence/BedrockKnowledgeBases.puml
+!includeurl AWSPuml/Integration/EventBridge.puml
+!includeurl AWSPuml/Integration/StepFunctions.puml
+!includeurl AWSPuml/Compute/Lambda.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/KeyManagementService.puml
+left to right direction
+EventBridge(ev,"Security / Ops Events")
+StepFunctions(sf,"Workflow Orchestration")
+BedrockAgents(supervisor,"Supervisor Agent")
+BedrockAgents(triage,"Triage Agent")
+BedrockAgents(remediation,"Remediation Advisor")
+BedrockKnowledgeBases(kb,"Knowledge Base")
+SimpleStorageService(s3,"Approved Runbooks")
+Lambda(tool,"Bounded Tool Adapter / MCP Gateway")
+DynamoDB(state,"Case State")
+Bedrock(model,"Foundation Model")
+CloudWatch(cw,"CloudWatch / Audit")
+KeyManagementService(kms,"KMS")
+ev --> sf
+sf --> supervisor
+supervisor --> triage
+supervisor --> remediation
+triage --> kb
+kb --> s3
+triage --> model
+remediation --> model
+supervisor --> tool
+tool --> state
+supervisor --> cw
+s3 --> kms
+state --> kms
+@enduml
