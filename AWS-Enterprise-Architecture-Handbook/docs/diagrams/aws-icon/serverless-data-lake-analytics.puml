@@ -8,21 +8,21 @@
 !include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
 
-APIGateway(api, "Data Ingestion API", "governed ingestion entry")
-Lambda(fn, "Data Processor", "validation and enrichment")
-EventBridge(bus, "Data Events", "event routing")
-SimpleQueueService(q, "Processing Queue", "buffer and retry")
-StepFunctions(sf, "Data Workflow", "pipeline orchestration")
-DynamoDB(db, "Pipeline State", "processing metadata")
-SimpleStorageService(s3, "Data Lake", "raw and curated objects")
-CloudWatch(cw, "Pipeline Telemetry", "logs and alarms")
+APIGateway(svc01, "Data Ingestion API", "Amazon API Gateway", "Governed ingestion entry")
+Lambda(svc02, "Data Processor", "AWS Lambda", "Validation and enrichment")
+EventBridge(svc03, "Data Events", "Amazon EventBridge", "Event-driven routing")
+SimpleQueueService(svc04, "Processing Queue", "Amazon SQS", "Buffered asynchronous processing")
+StepFunctions(svc05, "Data Workflow", "AWS Step Functions", "Pipeline orchestration")
+DynamoDB(svc06, "Pipeline State", "Amazon DynamoDB", "Processing metadata")
+SimpleStorageService(svc07, "Data Lake", "Amazon S3", "Raw and curated objects")
+CloudWatch(svc08, "Pipeline Telemetry", "Amazon CloudWatch", "Logs, metrics, and alarms")
 
-api --> fn
-fn --> bus
-bus --> q
-q --> sf
-sf --> db
-sf --> s3
-fn --> cw
-sf --> cw
+svc01 --> svc02
+svc02 --> svc03
+svc03 --> svc04
+svc04 --> svc05
+svc05 --> svc06
+svc05 --> svc07
+svc02 --> svc08
+svc05 --> svc08
 @enduml
