@@ -1,0 +1,29 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/Storage/all.puml
+left to right direction
+TransitGateway(tgw,"Transit Gateway")
+VirtualPrivateCloud(appvpc,"Application VPC")
+VirtualPrivateCloud(datavpc,"Data VPC")
+VirtualPrivateCloud(inspect,"Inspection VPC")
+NetworkFirewall(nfwa,"Network Firewall AZ-a")
+NetworkFirewall(nfwb,"Network Firewall AZ-b")
+VPCNATGateway(nata,"NAT Gateway AZ-a")
+VPCNATGateway(natb,"NAT Gateway AZ-b")
+CloudWatch(cw,"Firewall metrics and alarms")
+SimpleStorageService(logs,"Central firewall logs")
+appvpc --> tgw
+datavpc --> tgw
+tgw --> inspect
+inspect --> nfwa
+inspect --> nfwb
+nfwa --> nata
+nfwb --> natb
+nfwa --> logs
+nfwb --> logs
+cw --> nfwa
+cw --> nfwb
+@enduml
