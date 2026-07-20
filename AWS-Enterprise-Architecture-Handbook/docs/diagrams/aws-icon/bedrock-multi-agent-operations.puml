@@ -6,20 +6,23 @@
 !include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-EventBridge(ev,"Security and Ops Events","event intake")
-StepFunctions(sf,"Step Functions","agent workflow orchestration")
-Lambda(supervisor,"Lambda","Bedrock supervisor adapter")
-Lambda(triage,"Lambda","triage agent adapter")
-Lambda(remediation,"Lambda","remediation advisor adapter")
-SimpleStorageService(runbooks,"S3","approved runbooks and knowledge")
-DynamoDB(state,"DynamoDB","case and approval state")
-CloudWatch(cw,"CloudWatch","agent and tool audit telemetry")
-ev --> sf
-sf --> supervisor
-supervisor --> triage
-supervisor --> remediation
-triage --> runbooks
-remediation --> state
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "Agent API", "governed entry")
+Lambda(fn, "Bedrock Supervisor Adapter", "agent orchestration")
+EventBridge(bus, "Security Event Bus", "event intake")
+SimpleQueueService(q, "Agent Work Queue", "buffer and retry")
+StepFunctions(sf, "Approval Workflow", "bounded orchestration")
+DynamoDB(db, "Case State", "agent and approval state")
+SimpleStorageService(s3, "Approved Runbooks", "knowledge source")
+CloudWatch(cw, "Agent Telemetry", "logs and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
 sf --> cw
 @enduml
