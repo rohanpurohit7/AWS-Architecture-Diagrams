@@ -1,10 +1,10 @@
 from diagrams import Diagram, Cluster, Edge
-from diagrams.aws.security import Cloudtrail, Guardduty, SecurityHub
+from diagrams.aws.security import Guardduty, SecurityHub
 from diagrams.aws.integration import Eventbridge, SNS
 from diagrams.aws.compute import Lambda
 from diagrams.aws.storage import S3
 from diagrams.aws.analytics import ElasticsearchService
-from diagrams.aws.management import Cloudwatch
+from diagrams.aws.management import Cloudtrail, Cloudwatch
 
 OUT = "AWS-Enterprise-Architecture-Handbook/docs/diagrams/rendered/security-data-platform"
 with Diagram("Security Data Platform", filename=OUT, outformat="png", show=False, direction="LR"):
