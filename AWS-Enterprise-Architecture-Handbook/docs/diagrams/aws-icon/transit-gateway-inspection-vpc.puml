@@ -2,22 +2,25 @@
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/Storage/all.puml
-left to right direction
-VirtualPrivateCloud(app,"Application VPC","private workloads")
-VirtualPrivateCloud(data,"Data VPC","private analytics workloads")
-TransitGateway(tgw,"Transit Gateway","central routing hub")
-VirtualPrivateCloud(inspect,"Inspection VPC","central security boundary")
-NetworkFirewall(fw,"Network Firewall","stateful inspection")
-VPCNATGateway(nat,"NAT Gateway","controlled egress")
-CloudWatch(cw,"CloudWatch","network and firewall telemetry")
-SimpleStorageService(logs,"S3","central firewall logs")
-app --> tgw
-data --> tgw
+
+DirectConnect(dx, "Workload Connectivity", "approved private path")
+SitetoSiteVPN(vpn, "Backup Connectivity", "resilient alternate path")
+TransitGateway(tgw, "Transit Gateway", "central routing hub")
+VirtualPrivateCloud(inspect, "Inspection VPC", "central security boundary")
+NetworkFirewall(nfw, "Network Firewall", "stateful inspection")
+VPCNATGateway(nat, "NAT Gateway", "controlled egress")
+VirtualPrivateCloud(prod, "Application VPC", "private workloads")
+VirtualPrivateCloud(shared, "Data VPC", "private analytics workloads")
+CloudWatch(cw, "CloudWatch", "network and firewall telemetry")
+
+dx --> tgw
+vpn --> tgw
 tgw --> inspect
-inspect --> fw
-fw --> nat
-fw --> cw
-fw --> logs
+inspect --> nfw
+nfw --> nat
+tgw --> prod
+tgw --> shared
+nfw --> cw
 @enduml
