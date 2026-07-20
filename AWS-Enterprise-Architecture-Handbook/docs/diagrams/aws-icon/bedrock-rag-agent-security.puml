@@ -3,21 +3,26 @@
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/ApplicationIntegration/all.puml
 !include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-!include AWSPuml/Analytics/all.puml
-left to right direction
-APIGateway(api,"API Gateway","governed entry point")
-Lambda(orchestrator,"Lambda","Bedrock RAG orchestrator")
-SimpleStorageService(knowledge,"S3","approved knowledge corpus")
-OpenSearchService(search,"OpenSearch","retrieval index")
-StepFunctions(approval,"Step Functions","human approval workflow")
-CloudWatch(cw,"CloudWatch","model and application telemetry")
-api --> orchestrator
-orchestrator --> knowledge
-knowledge --> search
-orchestrator --> search
-orchestrator --> approval
-orchestrator --> cw
-approval --> cw
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "RAG API", "governed entry")
+Lambda(fn, "RAG Orchestrator", "Bedrock request adapter")
+EventBridge(bus, "Retrieval Events", "request routing")
+SimpleQueueService(q, "Retrieval Queue", "buffer and retry")
+StepFunctions(sf, "Approval Workflow", "human approval")
+DynamoDB(db, "Session State", "request metadata")
+SimpleStorageService(s3, "Approved Knowledge", "knowledge corpus")
+CloudWatch(cw, "RAG Telemetry", "logs and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
 @enduml
