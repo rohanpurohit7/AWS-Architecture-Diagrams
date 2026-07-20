@@ -1,101 +1,72 @@
-name: Sync and Render AWS Architecture Handbook
+name: Render AWS Architecture Diagrams
 
 on:
   workflow_dispatch:
   push:
     branches: [ master ]
     paths:
-      - 'docs/**'
-      - 'reference-architectures/**'
-      - 'diagrams/**'
-      - 'runbooks/**'
-      - 'templates/**'
-      - 'notebooks/**'
-      - 'scripts/**'
-      - 'INDEX.md'
-      - 'AWS-Enterprise-Architecture-Handbook/**'
+      - 'docs/diagrams/aws-icon/**'
+      - 'scripts/render-aws-diagrams.sh'
       - '.github/workflows/render-aws-diagrams.yml'
 
 permissions:
   contents: write
 
-env:
-  PLANTUML_VERSION: '1.2026.3'
-  PLANTUML_SHA256: '53af6760d96bb2737e5e4386e832b46339fc29dec74f412d7c12db7c30db8ec4'
-
 jobs:
-  sync-render:
+  render:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Java, Graphviz, and rsync
+      - name: Install Java, Graphviz, curl, and jq
         run: |
           sudo apt-get update
-          sudo apt-get install -y default-jre-headless graphviz rsync curl
+          sudo apt-get install -y default-jre-headless graphviz curl jq
 
-      - name: Download pinned PlantUML
+      - name: Download current PlantUML release
+        shell: bash
         run: |
+          set -euo pipefail
+          asset_url=$(curl --fail --silent --show-error --location \
+            https://api.github.com/repos/plantuml/plantuml/releases/latest \
+            | jq -r '.assets[] | select(.name | test("^plantuml-[0-9.]+\\.jar$")) | .browser_download_url' \
+            | head -n 1)
+          if [ -z "$asset_url" ] || [ "$asset_url" = "null" ]; then
+            echo "Unable to resolve the latest PlantUML JAR release asset." >&2
+            exit 1
+          fi
           curl --fail --location --retry 3 --retry-delay 2 \
-            -o "$RUNNER_TEMP/plantuml.jar" \
-            "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar"
-          echo "${PLANTUML_SHA256}  $RUNNER_TEMP/plantuml.jar" | sha256sum --check --strict
+            -o "$RUNNER_TEMP/plantuml.jar" "$asset_url"
           echo "PLANTUML_JAR=$RUNNER_TEMP/plantuml.jar" >> "$GITHUB_ENV"
           java -jar "$RUNNER_TEMP/plantuml.jar" -version
-
-      - name: Consolidate authored artifacts into canonical handbook root
-        run: |
-          ROOT="AWS-Enterprise-Architecture-Handbook"
-          mkdir -p "$ROOT/docs" "$ROOT/scripts"
-
-          [ -d docs ] && rsync -a docs/ "$ROOT/docs/" || true
-          [ -d reference-architectures ] && rsync -a reference-architectures/ "$ROOT/reference-architectures/" || true
-          [ -d diagrams ] && rsync -a diagrams/ "$ROOT/diagrams/" || true
-          [ -d runbooks ] && rsync -a runbooks/ "$ROOT/runbooks/" || true
-          [ -d templates ] && rsync -a templates/ "$ROOT/templates/" || true
-          [ -d notebooks ] && rsync -a notebooks/ "$ROOT/notebooks/" || true
-          [ -d scripts ] && rsync -a scripts/ "$ROOT/scripts/" || true
-          [ -f INDEX.md ] && cp INDEX.md "$ROOT/LEGACY_ROOT_INDEX.md" || true
 
       - name: Render AWS-icon PlantUML sources to SVG
         run: bash scripts/render-aws-diagrams.sh
 
       - name: Validate rendered outputs
+        shell: bash
         run: |
-          ROOT="AWS-Enterprise-Architecture-Handbook"
-          test -d "$ROOT/docs/diagrams/rendered"
-          source_count=$(find "$ROOT/docs/diagrams/aws-icon" -type f -name '*.puml' | wc -l)
-          svg_count=$(find "$ROOT/docs/diagrams/rendered" -type f -name '*.svg' | wc -l)
+          set -euo pipefail
+          source_count=$(find docs/diagrams/aws-icon -maxdepth 1 -type f -name '*.puml' | wc -l)
+          svg_count=$(find docs/diagrams/rendered -maxdepth 1 -type f -name '*.svg' | wc -l)
           echo "PlantUML source count: $source_count"
           echo "Rendered SVG count: $svg_count"
-          if [ "$source_count" -eq 0 ]; then
-            echo "No PlantUML sources were found." >&2
-            exit 1
-          fi
-          if [ "$svg_count" -ne "$source_count" ]; then
-            echo "Rendered SVG count does not match source diagram count." >&2
-            exit 1
-          fi
+          test "$source_count" -gt 0
+          test "$svg_count" -eq "$source_count"
+          test -f docs/diagrams/README.md
 
-      - name: Verify canonical content placement
+      - name: Commit rendered diagrams
+        shell: bash
         run: |
-          ROOT="AWS-Enterprise-Architecture-Handbook"
-          test -f "$ROOT/README.md"
-          test -d "$ROOT/docs/reference-architectures"
-          test -d "$ROOT/docs/runbooks"
-          test -d "$ROOT/docs/diagrams/aws-icon"
-          test -f "$ROOT/docs/diagrams/README.md"
-
-      - name: Commit canonical handbook sync and rendered diagrams
-        run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add AWS-Enterprise-Architecture-Handbook
+          git add docs/diagrams/rendered docs/diagrams/README.md
           if git diff --cached --quiet; then
-            echo "No handbook changes to commit."
+            echo "No rendered diagram changes to commit."
           else
-            git commit -m "docs: consolidate handbook and render AWS architecture previews [skip ci]"
+            git commit -m "docs: render AWS architecture SVG previews [skip ci]"
             git push
           fi
