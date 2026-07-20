@@ -1,31 +1,23 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/SecurityIdentityCompliance/WAF.puml
-!include AWSPuml/SecurityIdentityCompliance/SecurityLake.puml
-!include AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
-!include AWSPuml/SecurityIdentityCompliance/Detective.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/Analytics/KinesisDataStreams.puml
-!include AWSPuml/Analytics/OpenSearchService.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
-WAF(waf,"AWS WAF","controlled exposure")
-Lambda(honey1,"Honeypot Workload A","deception workload")
-Lambda(honey2,"Honeypot Workload B","deception workload")
-CloudWatch(cw,"CloudWatch","telemetry")
-KinesisDataStreams(stream,"Kinesis Data Streams","streaming")
-SecurityLake(lake,"Amazon Security Lake","security data")
-OpenSearchService(os,"OpenSearch","investigation")
-SecurityHub(hub,"Security Hub","findings")
-Detective(det,"Amazon Detective","investigation graph")
-waf --> honey1
-waf --> honey2
-honey1 --> cw
-honey2 --> cw
-cw --> stream
-stream --> lake
-lake --> os
+Lambda(honeypot,"Lambda","isolated deception workload")
+CloudWatch(telemetry,"CloudWatch","deception telemetry")
+EventBridge(events,"EventBridge","event routing")
+SecurityLake(lake,"Security Lake","central security data")
+OpenSearchService(search,"OpenSearch","investigation views")
+SecurityHub(hub,"Security Hub","finding aggregation")
+Detective(det,"Detective","investigation context")
+honeypot --> telemetry
+telemetry --> events
+events --> lake
+lake --> search
 lake --> hub
 hub --> det
 @enduml
