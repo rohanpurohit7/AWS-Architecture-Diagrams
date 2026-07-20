@@ -1,36 +1,23 @@
 # AWS Enterprise Architecture Learn
 
-A practical AWS architecture handbook organized around **reference architectures, configuration runbooks, certification patterns, security controls, and operational validation**.
+This repository is organized around one canonical content root:
 
-The repository uses AWS architecture conventions rather than generic box flows:
+## [AWS Enterprise Architecture Handbook](AWS-Enterprise-Architecture-Handbook/README.md)
 
-- AWS account and Region boundaries
-- VPC CIDR boundaries
-- Availability Zones
-- public, private application, inspection, and isolated data subnets
-- route tables, Internet Gateway, NAT Gateway, Transit Gateway, and VPC endpoints
-- load balancers, compute services, databases, observability, and security services
-- explicit ingress, egress, telemetry, and trust flows
+All reference architectures, configuration runbooks, certification patterns, AWS-icon diagram sources, rendered SVG previews, notebooks, standards, templates, and case studies are consolidated under `AWS-Enterprise-Architecture-Handbook/`.
+
+Repository-level `.github/` remains outside the handbook because GitHub requires workflows at the repository root.
 
 ## Start Here
 
-- [Repository Index](INDEX.md)
-- [Architecture Article Template](templates/ARCHITECTURE_ARTICLE_TEMPLATE.md)
-- [Secure Multi-AZ Three-Tier Application](reference-architectures/secure-multi-az-three-tier.md)
-- [Centralized Inspection and Transit Gateway](reference-architectures/centralized-inspection-tgw.md)
-- [Security Analytics and Bedrock Agent Operations](reference-architectures/security-analytics-bedrock-agent.md)
+- [Handbook Home](AWS-Enterprise-Architecture-Handbook/README.md)
+- [Architecture Documentation Index](AWS-Enterprise-Architecture-Handbook/docs/INDEX.md)
+- [Rendered AWS Architecture Gallery](AWS-Enterprise-Architecture-Handbook/docs/diagrams/README.md)
+- [Reference Architectures](AWS-Enterprise-Architecture-Handbook/docs/reference-architectures/)
+- [Visual Validation Runbooks](AWS-Enterprise-Architecture-Handbook/docs/runbooks/)
+- [Editable AWS-icon PlantUML Sources](AWS-Enterprise-Architecture-Handbook/docs/diagrams/aws-icon/)
 
-## Visual Architecture Library
-
-- [Secure Multi-AZ Three-Tier SVG](diagrams/secure-multi-az-three-tier.svg)
-- [Centralized Inspection SVG](diagrams/centralized-inspection-tgw.svg)
-- [Security Analytics and Bedrock SVG](diagrams/security-analytics-bedrock-agent.svg)
-
-## Runbooks
-
-- [VPC, Subnets, Routes, NACLs, Security Groups, and NAT](runbooks/secure-vpc-foundation.md)
-- [Transit Gateway and Centralized Firewall Inspection](runbooks/transit-gateway-inspection.md)
-- [Security Lake, OpenSearch, and Bedrock Agent Monitoring](runbooks/security-analytics-bedrock.md)
+> **Diagram viewing:** GitHub displays `.puml` files as source markup. Use the rendered SVG gallery for visual diagrams. The `.puml` files are retained as editable architecture-as-code sources.
 
 ## Architecture Quality Standard
 
@@ -47,4 +34,4 @@ Every pattern should document:
 9. validation and rollback
 10. cost, resilience, and Well-Architected considerations
 
-> All account IDs, CIDRs, names, and workloads in this repository are synthetic learning examples. Never publish live credentials, customer data, CUI, PII, private DNS names, or production topology.
+> All account IDs, CIDRs, names, and workloads are synthetic learning examples. Never publish live credentials, customer data, CUI, PII, private DNS names, or production topology.
