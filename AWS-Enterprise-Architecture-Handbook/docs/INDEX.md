@@ -2,13 +2,14 @@
 
 ## Rendered AWS Architecture Diagrams
 
-Use the rendered SVG gallery for visual review:
+Use the [Rendered AWS Architecture Diagram Gallery](diagrams/README.md) for visual review.
 
-- [Rendered AWS Architecture Diagram Gallery](diagrams/README.md)
 - Rendered assets: `diagrams/rendered/*.svg`
 - Editable sources: `diagrams/aws-icon/*.puml`
+- Local renderer: `../scripts/render-aws-diagrams.sh`
+- Repository workflow: `../../.github/workflows/render-aws-diagrams.yml`
 
-> GitHub shows `.puml` files as markup. The `.puml` files are source artifacts; the SVG gallery is the primary visual presentation layer.
+> GitHub shows `.puml` files as source markup. The gallery and rendered SVGs are the visual presentation layer.
 
 ## AWS-Icon Architecture Sources
 
@@ -72,36 +73,16 @@ Use the rendered SVG gallery for visual review:
 ## Certification Alignment
 
 ### Solutions Architect Professional
-- Secure multi-AZ application
-- Multi-account landing zone
-- Global multi-region active-active
-- Edge/global delivery
-- Disaster recovery and game-day validation
-- Transit Gateway inspection
-- Serverless data lake and analytics
+Secure multi-AZ application, multi-account landing zone, global multi-region active-active, edge/global delivery, disaster recovery, Transit Gateway inspection, and serverless analytics.
 
 ### Security Specialty
-- Central SOC
-- Zero Trust identity
-- Honeypot and Security Lake
-- Security analytics lakehouse
-- Agentic security operations controls
-- WAF/Shield edge protection
-- Central logging and encrypted analytics
+Central SOC, Zero Trust identity, honeypot/Security Lake, security analytics lakehouse, agentic security operations controls, WAF protection, and centralized logging.
 
 ### Advanced Networking
-- Secure VPC foundation
-- Transit Gateway inspection VPC
-- Hybrid Direct Connect/VPN connectivity
-- PrivateLink service access
-- Route 53 Resolver hybrid DNS
-- Edge routing with Route 53 and Global Accelerator
+Secure VPC foundation, Transit Gateway inspection, Direct Connect/VPN connectivity, PrivateLink, Route 53 Resolver hybrid DNS, and global routing patterns.
 
 ### Developer
-- Event-driven serverless platform
-- Serverless data ingestion and processing
-- EKS observability
-- Bedrock application and agent integration
+Event-driven serverless applications, data ingestion, EKS observability, and Bedrock application/agent integration.
 
 ## Recommended Reading Order
 
@@ -122,4 +103,4 @@ Use the rendered SVG gallery for visual review:
 
 ## Architecture Standard
 
-Service components use AWS icon-based PlantUML definitions sourced from the AWS Labs AWS Icons for PlantUML library. Rectangular boundaries are reserved for structural concepts such as AWS accounts, Regions, VPCs, Availability Zones, and subnets. Each major pattern is paired with a narrative article and, where operationally useful, a validation runbook.
+Service components use AWS icon-based PlantUML definitions. Rectangular boundaries are reserved for structural concepts such as AWS accounts, Regions, VPCs, Availability Zones, and subnets. Major patterns are paired with narrative reference architectures and operational validation runbooks.
