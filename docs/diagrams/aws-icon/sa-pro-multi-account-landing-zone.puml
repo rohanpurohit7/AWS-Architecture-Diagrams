@@ -1,0 +1,44 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/ManagementGovernance/Organizations.puml
+!includeurl AWSPuml/ManagementGovernance/ControlTower.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IAMIdentityCenter.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/GuardDuty.puml
+!includeurl AWSPuml/ManagementGovernance/CloudTrail.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/NetworkingContentDelivery/TransitGateway.puml
+!includeurl AWSPuml/General/Users.puml
+left to right direction
+Users(users,"Workforce")
+IAMIdentityCenter(sso,"IAM Identity Center")
+Organizations(orgs,"AWS Organizations")
+ControlTower(ct,"Control Tower")
+rectangle "Management Account" {
+  orgs
+  ct
+}
+rectangle "Security OU" {
+  SecurityHub(sh,"Security Hub")
+  GuardDuty(gd,"GuardDuty")
+}
+rectangle "Log Archive Account" {
+  CloudTrail(trail,"Organization CloudTrail")
+  SimpleStorageService(logs,"Immutable Log Archive")
+}
+rectangle "Network Account" {
+  TransitGateway(tgw,"Transit Gateway")
+}
+rectangle "Workload OUs" {
+  rectangle "Prod Accounts"
+  rectangle "Non-Prod Accounts"
+}
+users --> sso
+sso --> orgs
+ct --> orgs
+orgs --> sh
+orgs --> trail
+trail --> logs
+orgs --> tgw
+@enduml
