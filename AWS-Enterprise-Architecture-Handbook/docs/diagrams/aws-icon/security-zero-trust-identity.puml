@@ -1,25 +1,18 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/SecurityIdentityCompliance/IAMIdentityCenter.puml
-!include AWSPuml/SecurityIdentityCompliance/IdentityAccessManagement.puml
-!include AWSPuml/SecurityIdentityCompliance/SecretsManager.puml
-!include AWSPuml/SecurityIdentityCompliance/KeyManagementService.puml
-!include AWSPuml/NetworkingContentDelivery/VerifiedAccess.puml
-!include AWSPuml/NetworkingContentDelivery/PrivateLink.puml
-!include AWSPuml/ManagementGovernance/CloudTrail.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
-IAMIdentityCenter(sso,"IAM Identity Center","federated workforce access")
-VerifiedAccess(va,"Verified Access","identity-aware application access")
-IdentityAccessManagement(iam,"IAM Roles","workload identity")
-PrivateLink(pl,"AWS PrivateLink","private service access")
-SecretsManager(sm,"Secrets Manager","managed secrets")
-KeyManagementService(kms,"AWS KMS","encryption keys")
-CloudTrail(ct,"CloudTrail","access audit")
-sso --> va
-va --> iam
-iam --> pl
-pl --> sm
-sm --> kms
-iam --> ct
+APIGateway(access,"API Gateway","identity-aware application entry")
+Lambda(authz,"Lambda","authorization and policy evaluation")
+VirtualPrivateCloud(private,"Private Application VPC","private service boundary")
+CloudTrail(trail,"CloudTrail","access audit trail")
+CloudWatch(cw,"CloudWatch","access telemetry and alarms")
+access --> authz
+authz --> private
+authz --> trail
+authz --> cw
 @enduml
