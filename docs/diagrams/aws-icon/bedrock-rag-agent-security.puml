@@ -1,16 +1,15 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/General/Users.puml
-!include AWSPuml/NetworkingContentDelivery/APIGateway.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/ArtificialIntelligence/Bedrock.puml
-!include AWSPuml/Storage/S3.puml
-!include AWSPuml/Database/OpenSearchService.puml
-!include AWSPuml/SecurityIdentityCompliance/Cognito.puml
-!include AWSPuml/SecurityIdentityCompliance/KMS.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/ApplicationIntegration/StepFunctions.puml
+!include AWSPuml/General/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/ArtificialIntelligence/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
 
 left to right direction
 skinparam shadowing false
@@ -29,8 +28,8 @@ rectangle "AWS Account" {
     }
   }
   Bedrock(bedrock, "Amazon Bedrock / Guardrails")
-  S3(knowledge, "Approved knowledge corpus")
-  KMS(kms, "KMS encryption")
+  SimpleStorageService(knowledge, "Approved knowledge corpus")
+  KeyManagementService(kms, "KMS encryption")
   CloudWatch(cw, "Model and application telemetry")
 }
 
