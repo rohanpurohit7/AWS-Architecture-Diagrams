@@ -1,0 +1,64 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/General/Users.puml
+!include AWSPuml/NetworkingContentDelivery/Route53.puml
+!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!include AWSPuml/SecurityIdentityCompliance/WAF.puml
+!include AWSPuml/SecurityIdentityCompliance/Shield.puml
+!include AWSPuml/NetworkingContentDelivery/GlobalAccelerator.puml
+!include AWSPuml/NetworkingContentDelivery/ElasticLoadBalancing.puml
+!include AWSPuml/Compute/EKS.puml
+!include AWSPuml/Storage/S3.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+
+left to right direction
+skinparam shadowing false
+
+Users(users, "Global users")
+Route53(r53, "Route 53")
+CloudFront(cf, "CloudFront")
+WAF(waf, "AWS WAF")
+Shield(shield, "Shield")
+GlobalAccelerator(ga, "Global Accelerator")
+
+rectangle "AWS Organization / Production Account" {
+  rectangle "Region A" {
+    rectangle "VPC 10.10.0.0/16" {
+      rectangle "Public subnets / two AZs" {
+        ElasticLoadBalancing(alba, "Application Load Balancer")
+      }
+      rectangle "Private application subnets" {
+        EKS(eksa, "EKS services")
+      }
+    }
+  }
+  rectangle "Region B" {
+    rectangle "VPC 10.20.0.0/16" {
+      rectangle "Public subnets / two AZs" {
+        ElasticLoadBalancing(albb, "Application Load Balancer")
+      }
+      rectangle "Private application subnets" {
+        EKS(eksb, "EKS services")
+      }
+    }
+  }
+  S3(s3, "Static assets / origin")
+  CloudWatch(cw, "CloudWatch metrics and alarms")
+}
+
+users --> r53
+r53 --> cf
+r53 --> ga
+cf --> shield
+shield --> waf
+waf --> s3
+waf --> alba
+waf --> albb
+ga --> alba
+ga --> albb
+alba --> eksa
+albb --> eksb
+cw .. alba
+cw .. albb
+@enduml
