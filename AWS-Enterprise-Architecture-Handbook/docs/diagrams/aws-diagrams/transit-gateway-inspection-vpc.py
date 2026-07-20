@@ -1,6 +1,5 @@
 from diagrams import Diagram, Cluster, Edge
-from diagrams.aws.network import TransitGateway, VPC, NATGateway
-from diagrams.aws.security import NetworkFirewall
+from diagrams.aws.network import TransitGateway, VPC, NATGateway, NetworkFirewall
 from diagrams.aws.management import Cloudwatch
 from diagrams.aws.storage import S3
 
