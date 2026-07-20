@@ -1,0 +1,26 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+left to right direction
+rectangle "On-premises data center" {
+  rectangle "Enterprise DNS and applications" as onprem
+}
+DirectConnect(dx,"Direct Connect")
+SitetoSiteVPN(vpn,"Site-to-Site VPN backup")
+TransitGateway(tgw,"Transit Gateway")
+Route53(r53,"Route 53 Resolver")
+VirtualPrivateCloud(shared,"Shared Services VPC")
+VirtualPrivateCloud(app,"Application VPC")
+CloudWatch(cw,"DNS and network telemetry")
+onprem --> dx
+onprem --> vpn
+dx --> tgw
+vpn --> tgw
+tgw --> shared
+shared --> r53
+r53 --> app
+shared --> cw
+app --> cw
+@enduml
