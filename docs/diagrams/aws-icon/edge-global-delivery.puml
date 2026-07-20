@@ -1,60 +1,24 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/General/all.puml
-!include AWSPuml/NetworkingContentDelivery/all.puml
 !include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/Containers/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-
 left to right direction
-skinparam shadowing false
-
-Users(users, "Global users")
-Route53(r53, "Route 53")
-CloudFront(cf, "CloudFront")
-WAF(waf, "AWS WAF")
-Shield(shield, "Shield")
-GlobalAccelerator(ga, "Global Accelerator")
-
-rectangle "AWS Organization / Production Account" {
-  rectangle "Region A" {
-    rectangle "VPC 10.10.0.0/16" {
-      rectangle "Public subnets / two AZs" {
-        ElasticLoadBalancingApplicationLoadBalancer(alba, "Application Load Balancer")
-      }
-      rectangle "Private application subnets" {
-        ElasticKubernetesService(eksa, "EKS services")
-      }
-    }
-  }
-  rectangle "Region B" {
-    rectangle "VPC 10.20.0.0/16" {
-      rectangle "Public subnets / two AZs" {
-        ElasticLoadBalancingApplicationLoadBalancer(albb, "Application Load Balancer")
-      }
-      rectangle "Private application subnets" {
-        ElasticKubernetesService(eksb, "EKS services")
-      }
-    }
-  }
-  SimpleStorageService(s3, "Static assets / origin")
-  CloudWatch(cw, "CloudWatch metrics and alarms")
-}
-
-users --> r53
-r53 --> cf
-r53 --> ga
-cf --> shield
-shield --> waf
+WAF(waf,"AWS WAF")
+APIGateway(apiA,"Regional API A")
+APIGateway(apiB,"Regional API B")
+Lambda(appA,"Application Region A")
+Lambda(appB,"Application Region B")
+SimpleStorageService(s3,"Static Assets")
+CloudWatch(cw,"Health and Alarms")
+waf --> apiA
+waf --> apiB
 waf --> s3
-waf --> alba
-waf --> albb
-ga --> alba
-ga --> albb
-alba --> eksa
-albb --> eksb
-cw .. alba
-cw .. albb
+apiA --> appA
+apiB --> appB
+appA --> cw
+appB --> cw
 @enduml
