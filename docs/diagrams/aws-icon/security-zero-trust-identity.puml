@@ -1,0 +1,32 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IAMIdentityCenter.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagement.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/VerifiedPermissions.puml
+!includeurl AWSPuml/NetworkingContentDelivery/VerifiedAccess.puml
+!includeurl AWSPuml/NetworkingContentDelivery/PrivateLink.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/SecretsManager.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/KeyManagementService.puml
+!includeurl AWSPuml/ManagementGovernance/CloudTrail.puml
+!includeurl AWSPuml/General/Users.puml
+left to right direction
+Users(user,"User / Administrator")
+IAMIdentityCenter(sso,"IAM Identity Center")
+VerifiedAccess(va,"Verified Access")
+IdentityAccessManagement(iam,"IAM Roles")
+VerifiedPermissions(vp,"Verified Permissions")
+PrivateLink(pl,"PrivateLink")
+SecretsManager(sm,"Secrets Manager")
+KeyManagementService(kms,"KMS")
+CloudTrail(ct,"CloudTrail")
+user --> sso
+sso --> va
+va --> iam
+iam --> vp
+vp --> pl
+pl --> sm
+sm --> kms
+iam --> ct
+vp --> ct
+@enduml
