@@ -1,33 +1,21 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/ManagementGovernance/Organizations.puml
-!include AWSPuml/ManagementGovernance/ControlTower.puml
-!include AWSPuml/ManagementGovernance/CloudTrail.puml
-!include AWSPuml/SecurityIdentityCompliance/IAMIdentityCenter.puml
-!include AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
-!include AWSPuml/SecurityIdentityCompliance/GuardDuty.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
-!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
 left to right direction
-Organizations(orgs,"AWS Organizations","multi-account governance")
-ControlTower(ct,"AWS Control Tower","landing zone")
-IAMIdentityCenter(sso,"IAM Identity Center","workforce access")
-SecurityHub(sh,"Security Hub","finding aggregation")
+CloudTrail(trail,"CloudTrail","organization audit trail")
 GuardDuty(gd,"GuardDuty","threat detection")
-CloudTrail(trail,"CloudTrail","organization audit")
-SimpleStorageService(logs,"Amazon S3","central log archive")
-TransitGateway(tgw,"Transit Gateway","network hub")
-rectangle "Management Account" { orgs; ct; sso }
-rectangle "Security Account" { sh; gd }
-rectangle "Log Archive Account" { trail; logs }
-rectangle "Network Account" { tgw }
-rectangle "Workload OUs" as workloads
-sso --> orgs
-ct --> orgs
-orgs --> sh
-orgs --> trail
+SecurityHub(sh,"Security Hub","central finding aggregation")
+SimpleStorageService(logs,"S3","central log archive")
+TransitGateway(tgw,"Transit Gateway","shared network hub")
+VirtualPrivateCloud(prod,"Production VPC","production workloads")
+VirtualPrivateCloud(nonprod,"Non-production VPC","development workloads")
 trail --> logs
-orgs --> tgw
-orgs --> workloads
+gd --> sh
+prod --> tgw
+nonprod --> tgw
+tgw --> sh
 @enduml
