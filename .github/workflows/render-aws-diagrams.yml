@@ -1,40 +1,59 @@
-name: Render AWS Architecture Diagrams
+name: Sync and Render AWS Architecture Handbook
 
 on:
   workflow_dispatch:
   push:
+    branches: [ master ]
     paths:
-      - 'docs/diagrams/aws-icon/**/*.puml'
-      - 'scripts/render-aws-diagrams.sh'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'AWS-Enterprise-Architecture-Handbook/**'
       - '.github/workflows/render-aws-diagrams.yml'
 
 permissions:
   contents: write
 
 jobs:
-  render:
+  sync-render:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install PlantUML and Graphviz
+      - name: Install PlantUML, Graphviz, and rsync
         run: |
           sudo apt-get update
-          sudo apt-get install -y plantuml graphviz
+          sudo apt-get install -y plantuml graphviz rsync
 
-      - name: Render SVG diagrams
+      - name: Sync authored artifacts into canonical handbook root
+        run: |
+          mkdir -p AWS-Enterprise-Architecture-Handbook/docs
+          mkdir -p AWS-Enterprise-Architecture-Handbook/scripts
+          rsync -a docs/ AWS-Enterprise-Architecture-Handbook/docs/
+          rsync -a scripts/ AWS-Enterprise-Architecture-Handbook/scripts/
+
+      - name: Render AWS-icon PlantUML sources to SVG
         run: bash scripts/render-aws-diagrams.sh
 
-      - name: Commit rendered diagrams
+      - name: Validate rendered outputs
+        run: |
+          test -d AWS-Enterprise-Architecture-Handbook/docs/diagrams/rendered
+          count=$(find AWS-Enterprise-Architecture-Handbook/docs/diagrams/rendered -type f -name '*.svg' | wc -l)
+          echo "Rendered SVG count: $count"
+          if [ "$count" -lt 1 ]; then
+            echo "No SVG diagrams were rendered." >&2
+            exit 1
+          fi
+
+      - name: Commit canonical handbook sync and rendered diagrams
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/diagrams/rendered
+          git add AWS-Enterprise-Architecture-Handbook
           if git diff --cached --quiet; then
-            echo "No rendered diagram changes to commit."
+            echo "No handbook changes to commit."
           else
-            git commit -m "docs: render AWS architecture SVG previews [skip ci]"
+            git commit -m "docs: sync handbook and render AWS architecture previews [skip ci]"
             git push
           fi
