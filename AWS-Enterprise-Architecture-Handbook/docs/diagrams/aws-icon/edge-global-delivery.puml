@@ -1,0 +1,24 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+left to right direction
+WAF(waf,"AWS WAF")
+APIGateway(apiA,"Regional API A")
+APIGateway(apiB,"Regional API B")
+Lambda(appA,"Application Region A")
+Lambda(appB,"Application Region B")
+SimpleStorageService(s3,"Static Assets")
+CloudWatch(cw,"Health and Alarms")
+waf --> apiA
+waf --> apiB
+waf --> s3
+apiA --> appA
+apiB --> appB
+appA --> cw
+appB --> cw
+@enduml
