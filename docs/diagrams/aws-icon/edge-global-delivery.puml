@@ -1,16 +1,12 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/General/Users.puml
-!include AWSPuml/NetworkingContentDelivery/Route53.puml
-!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
-!include AWSPuml/SecurityIdentityCompliance/WAF.puml
-!include AWSPuml/SecurityIdentityCompliance/Shield.puml
-!include AWSPuml/NetworkingContentDelivery/GlobalAccelerator.puml
-!include AWSPuml/NetworkingContentDelivery/ElasticLoadBalancing.puml
-!include AWSPuml/Compute/EKS.puml
-!include AWSPuml/Storage/S3.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/General/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Containers/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 
 left to right direction
 skinparam shadowing false
@@ -26,24 +22,24 @@ rectangle "AWS Organization / Production Account" {
   rectangle "Region A" {
     rectangle "VPC 10.10.0.0/16" {
       rectangle "Public subnets / two AZs" {
-        ElasticLoadBalancing(alba, "Application Load Balancer")
+        ElasticLoadBalancingApplicationLoadBalancer(alba, "Application Load Balancer")
       }
       rectangle "Private application subnets" {
-        EKS(eksa, "EKS services")
+        ElasticKubernetesService(eksa, "EKS services")
       }
     }
   }
   rectangle "Region B" {
     rectangle "VPC 10.20.0.0/16" {
       rectangle "Public subnets / two AZs" {
-        ElasticLoadBalancing(albb, "Application Load Balancer")
+        ElasticLoadBalancingApplicationLoadBalancer(albb, "Application Load Balancer")
       }
       rectangle "Private application subnets" {
-        EKS(eksb, "EKS services")
+        ElasticKubernetesService(eksb, "EKS services")
       }
     }
   }
-  S3(s3, "Static assets / origin")
+  SimpleStorageService(s3, "Static assets / origin")
   CloudWatch(cw, "CloudWatch metrics and alarms")
 }
 
