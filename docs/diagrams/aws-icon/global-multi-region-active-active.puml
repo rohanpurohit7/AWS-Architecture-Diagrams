@@ -1,15 +1,13 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/General/Users.puml
-!include AWSPuml/NetworkingContentDelivery/Route53.puml
-!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
-!include AWSPuml/SecurityIdentityCompliance/WAF.puml
-!include AWSPuml/Compute/EKS.puml
-!include AWSPuml/Database/Aurora.puml
-!include AWSPuml/Database/DynamoDB.puml
-!include AWSPuml/Storage/S3.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/General/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/Containers/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 
 left to right direction
 skinparam shadowing false
@@ -24,7 +22,7 @@ rectangle "AWS Account" {
     rectangle "VPC 10.10.0.0/16" {
       rectangle "AZ-a" {
         rectangle "Public subnet" {
-          EKS(eksa, "EKS ingress and services")
+          ElasticKubernetesService(eksa, "EKS ingress and services")
         }
         rectangle "Private data subnet" {
           Aurora(auroraa, "Aurora writer / reader")
@@ -32,14 +30,14 @@ rectangle "AWS Account" {
       }
     }
     DynamoDB(ddba, "DynamoDB Global Table")
-    S3(s3a, "Regional S3 data")
+    SimpleStorageService(s3a, "Regional S3 data")
   }
 
   rectangle "Region B" {
     rectangle "VPC 10.20.0.0/16" {
       rectangle "AZ-b" {
         rectangle "Public subnet" {
-          EKS(eksb, "EKS ingress and services")
+          ElasticKubernetesService(eksb, "EKS ingress and services")
         }
         rectangle "Private data subnet" {
           Aurora(aurorab, "Aurora secondary region")
@@ -47,7 +45,7 @@ rectangle "AWS Account" {
       }
     }
     DynamoDB(ddbb, "DynamoDB Global Table")
-    S3(s3b, "Regional S3 data")
+    SimpleStorageService(s3b, "Regional S3 data")
   }
 
   CloudWatch(cw, "CloudWatch / alarms")
