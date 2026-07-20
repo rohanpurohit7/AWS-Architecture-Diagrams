@@ -1,36 +1,26 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/Route53.puml
-!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/Database/Aurora.puml
-!include AWSPuml/Database/DynamoDB.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
-Route53(r53,"Route 53","health-aware routing")
-CloudFront(cf,"CloudFront","global edge")
-rectangle "Primary Region" {
-  Lambda(app1,"Primary Application","active")
-  Aurora(db1,"Aurora Primary","transaction data")
-  DynamoDB(ddb1,"DynamoDB","global data")
-  SimpleStorageService(s31,"Amazon S3","primary objects")
-}
-rectangle "Recovery Region" {
-  Lambda(app2,"Warm Standby Application","recovery")
-  Aurora(db2,"Aurora Secondary","replica")
-  DynamoDB(ddb2,"DynamoDB Replica","global table")
-  SimpleStorageService(s32,"Replicated S3","recovery objects")
-}
-CloudWatch(cw,"CloudWatch","synthetic checks")
-r53 --> cf
-cf --> app1
-cf --> app2
-app1 --> db1
-app2 --> db2
-db1 --> db2
-ddb1 --> ddb2
-s31 --> s32
-cw --> r53
+APIGateway(entry,"API Gateway","application entry")
+Lambda(primary,"Lambda","primary Region application")
+Lambda(recovery,"Lambda","recovery Region application")
+DynamoDB(dataPrimary,"DynamoDB","primary data")
+DynamoDB(dataRecovery,"DynamoDB","replicated recovery data")
+SimpleStorageService(objectsPrimary,"S3","primary objects")
+SimpleStorageService(objectsRecovery,"S3","replicated objects")
+CloudWatch(cw,"CloudWatch","health and recovery telemetry")
+entry --> primary
+entry --> recovery
+primary --> dataPrimary
+recovery --> dataRecovery
+dataPrimary <--> dataRecovery
+objectsPrimary <--> objectsRecovery
+primary --> cw
+recovery --> cw
 @enduml
