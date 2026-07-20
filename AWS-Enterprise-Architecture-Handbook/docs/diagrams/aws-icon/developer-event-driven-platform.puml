@@ -1,0 +1,28 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "API Gateway", "REST entry")
+Lambda(fn, "Lambda", "request handler")
+EventBridge(bus, "EventBridge", "domain events")
+SimpleQueueService(q, "SQS", "buffer and retry")
+StepFunctions(sf, "Step Functions", "workflow")
+DynamoDB(db, "DynamoDB", "application state")
+SimpleStorageService(s3, "S3", "documents and objects")
+CloudWatch(cw, "CloudWatch", "logs and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
+@enduml
