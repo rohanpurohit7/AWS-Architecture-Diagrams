@@ -29,9 +29,22 @@ failures=()
 
 for diagram in "${diagrams[@]}"; do
   echo "Rendering $diagram"
-  if ! "${PLANTUML_CMD[@]}" -failfast2 -tsvg -o "$(realpath --relative-to="$(dirname "$diagram")" "$OUTPUT_DIR")" "$diagram"; then
+  rel_output="$(realpath --relative-to="$(dirname "$diagram")" "$OUTPUT_DIR")"
+  log_file="$(mktemp)"
+
+  if ! "${PLANTUML_CMD[@]}" -failfast2 -tsvg -o "$rel_output" "$diagram" >"$log_file" 2>&1; then
     failures+=("$diagram")
+    echo "----- PlantUML diagnostics for $diagram -----" >&2
+    cat "$log_file" >&2 || true
+    echo "----- Source for $diagram -----" >&2
+    nl -ba "$diagram" >&2 || true
+    echo "----- Verbose validation for $diagram -----" >&2
+    "${PLANTUML_CMD[@]}" -verbose -checkonly "$diagram" 2>&1 >&2 || true
+  else
+    cat "$log_file"
   fi
+
+  rm -f "$log_file"
 done
 
 if (( ${#failures[@]} > 0 )); then
