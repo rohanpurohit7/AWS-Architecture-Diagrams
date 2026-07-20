@@ -33,19 +33,40 @@ jobs:
           python -m pip install --upgrade pip
           pip install diagrams==0.24.4
 
-      - name: Validate Python diagram imports
+      - name: Validate every diagram import
+        shell: bash
         run: |
+          set -euo pipefail
           python - <<'PY'
-          from diagrams import Diagram, Cluster, Edge
-          from diagrams.aws.compute import Lambda
-          from diagrams.aws.integration import Eventbridge, SQS, StepFunctions
-          from diagrams.aws.database import Dynamodb
-          from diagrams.aws.storage import S3
-          from diagrams.aws.management import Cloudtrail, Cloudwatch
-          from diagrams.aws.network import APIGateway, TransitGateway, VPC, NATGateway, NetworkFirewall
-          from diagrams.aws.security import Guardduty, SecurityHub
-          from diagrams.aws.analytics import ElasticsearchService
-          print('AWS diagram imports validated successfully')
+          import ast
+          import importlib
+          from pathlib import Path
+
+          root = Path('AWS-Enterprise-Architecture-Handbook/docs/diagrams/aws-diagrams')
+          failures = []
+
+          for path in sorted(root.glob('*.py')):
+              tree = ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.ImportFrom) and node.module:
+                      try:
+                          module = importlib.import_module(node.module)
+                      except Exception as exc:
+                          failures.append(f'{path}: cannot import module {node.module}: {exc}')
+                          continue
+                      for alias in node.names:
+                          if alias.name == '*':
+                              continue
+                          if not hasattr(module, alias.name):
+                              failures.append(f'{path}: {alias.name} not found in {node.module}')
+
+          if failures:
+              print('AWS diagram import validation failed:')
+              for failure in failures:
+                  print(f' - {failure}')
+              raise SystemExit(1)
+
+          print('All AWS diagram imports validated successfully')
           PY
 
       - name: Render professional AWS architecture diagrams
