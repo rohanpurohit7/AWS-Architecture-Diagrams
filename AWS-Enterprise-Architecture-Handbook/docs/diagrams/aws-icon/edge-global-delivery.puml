@@ -3,17 +3,26 @@
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/ApplicationIntegration/all.puml
 !include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-APIGateway(edge,"API Gateway","global API entry")
-Lambda(regionA,"Lambda","Region A application")
-Lambda(regionB,"Lambda","Region B application")
-SimpleStorageService(static,"S3","static assets")
-CloudWatch(cw,"CloudWatch","health and failover telemetry")
-edge --> regionA
-edge --> regionB
-edge --> static
-regionA --> cw
-regionB --> cw
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "Global Edge Entry", "public application entry")
+Lambda(fn, "Regional Application", "request processing")
+EventBridge(bus, "Edge Events", "routing events")
+SimpleQueueService(q, "Failover Queue", "buffer and retry")
+StepFunctions(sf, "Failover Workflow", "regional orchestration")
+DynamoDB(db, "Global State", "application state")
+SimpleStorageService(s3, "Static Assets", "object content")
+CloudWatch(cw, "Edge Telemetry", "health and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
 @enduml
