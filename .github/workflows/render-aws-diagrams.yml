@@ -19,6 +19,10 @@ on:
 permissions:
   contents: write
 
+env:
+  PLANTUML_VERSION: '1.2026.3'
+  PLANTUML_SHA256: '53af6760d96bb2737e5e4386e832b46339fc29dec74f412d7c12db7c30db8ec4'
+
 jobs:
   sync-render:
     runs-on: ubuntu-latest
@@ -27,10 +31,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install PlantUML, Graphviz, and rsync
+      - name: Install Java, Graphviz, and rsync
         run: |
           sudo apt-get update
-          sudo apt-get install -y plantuml graphviz rsync
+          sudo apt-get install -y default-jre-headless graphviz rsync curl
+
+      - name: Download pinned PlantUML
+        run: |
+          curl --fail --location --retry 3 --retry-delay 2 \
+            -o "$RUNNER_TEMP/plantuml.jar" \
+            "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar"
+          echo "${PLANTUML_SHA256}  $RUNNER_TEMP/plantuml.jar" | sha256sum --check --strict
+          echo "PLANTUML_JAR=$RUNNER_TEMP/plantuml.jar" >> "$GITHUB_ENV"
+          java -jar "$RUNNER_TEMP/plantuml.jar" -version
 
       - name: Consolidate authored artifacts into canonical handbook root
         run: |
@@ -53,10 +66,16 @@ jobs:
         run: |
           ROOT="AWS-Enterprise-Architecture-Handbook"
           test -d "$ROOT/docs/diagrams/rendered"
-          count=$(find "$ROOT/docs/diagrams/rendered" -type f -name '*.svg' | wc -l)
-          echo "Rendered SVG count: $count"
-          if [ "$count" -lt 1 ]; then
-            echo "No SVG diagrams were rendered." >&2
+          source_count=$(find "$ROOT/docs/diagrams/aws-icon" -type f -name '*.puml' | wc -l)
+          svg_count=$(find "$ROOT/docs/diagrams/rendered" -type f -name '*.svg' | wc -l)
+          echo "PlantUML source count: $source_count"
+          echo "Rendered SVG count: $svg_count"
+          if [ "$source_count" -eq 0 ]; then
+            echo "No PlantUML sources were found." >&2
+            exit 1
+          fi
+          if [ "$svg_count" -ne "$source_count" ]; then
+            echo "Rendered SVG count does not match source diagram count." >&2
             exit 1
           fi
 
