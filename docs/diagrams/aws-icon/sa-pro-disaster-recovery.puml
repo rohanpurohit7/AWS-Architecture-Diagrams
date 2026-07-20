@@ -1,25 +1,23 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
-!includeurl AWSPuml/AWSCommon.puml
-!includeurl AWSPuml/NetworkingContentDelivery/Route53.puml
-!includeurl AWSPuml/NetworkingContentDelivery/CloudFront.puml
-!includeurl AWSPuml/Compute/AutoScaling.puml
-!includeurl AWSPuml/Compute/ElasticComputeCloud.puml
-!includeurl AWSPuml/Database/Aurora.puml
-!includeurl AWSPuml/Database/DynamoDB.puml
-!includeurl AWSPuml/Storage/SimpleStorageService.puml
-!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+
 left to right direction
 Route53(r53,"Route 53 Health Routing")
 CloudFront(cf,"CloudFront")
 rectangle "Primary Region" {
-  AutoScaling(asg1,"Application ASG")
+  EC2AutoScaling(asg1,"Application ASG")
   Aurora(db1,"Aurora Primary")
   DynamoDB(ddb1,"DynamoDB")
   SimpleStorageService(s31,"S3")
 }
 rectangle "Recovery Region" {
-  AutoScaling(asg2,"Warm Standby ASG")
+  EC2AutoScaling(asg2,"Warm Standby ASG")
   Aurora(db2,"Aurora Secondary")
   DynamoDB(ddb2,"Global Tables")
   SimpleStorageService(s32,"Replicated S3")
