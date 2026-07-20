@@ -1,15 +1,12 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/Storage/S3.puml
-!include AWSPuml/Analytics/KinesisDataStreams.puml
-!include AWSPuml/Analytics/Glue.puml
-!include AWSPuml/Analytics/Athena.puml
-!include AWSPuml/Analytics/OpenSearchService.puml
-!include AWSPuml/ApplicationIntegration/EventBridge.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/SecurityIdentityCompliance/KMS.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 
 left to right direction
 skinparam shadowing false
@@ -18,17 +15,17 @@ rectangle "AWS Analytics Account" {
   KinesisDataStreams(kds, "Kinesis Data Streams")
   EventBridge(eb, "EventBridge")
   Lambda(fn, "Lambda enrichment")
-  S3(raw, "S3 raw zone")
+  SimpleStorageService(raw, "S3 raw zone")
   Glue(glue, "Glue catalog / ETL")
-  S3(curated, "S3 curated zone")
+  SimpleStorageService(curated, "S3 curated zone")
   Athena(athena, "Athena")
   OpenSearchService(os, "OpenSearch")
-  KMS(kms, "KMS keys")
+  KeyManagementService(kms, "KMS keys")
   CloudWatch(cw, "CloudWatch")
 }
 
 kds --> fn
- eb --> fn
+eb --> fn
 fn --> raw
 raw --> glue
 glue --> curated
