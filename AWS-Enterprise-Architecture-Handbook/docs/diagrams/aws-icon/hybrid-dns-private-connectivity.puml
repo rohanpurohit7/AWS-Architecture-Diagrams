@@ -1,33 +1,20 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/DirectConnect.puml
-!include AWSPuml/NetworkingContentDelivery/SitetoSiteVPN.puml
-!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
-!include AWSPuml/NetworkingContentDelivery/Route53Resolver.puml
-!include AWSPuml/NetworkingContentDelivery/VirtualPrivateCloud.puml
-!include AWSPuml/NetworkingContentDelivery/PrivateLink.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
-rectangle "On-premises data center" {
-  rectangle "Enterprise DNS and applications" as onprem
-}
 DirectConnect(dx,"Direct Connect","primary hybrid path")
 SitetoSiteVPN(vpn,"Site-to-Site VPN","backup path")
-TransitGateway(tgw,"Transit Gateway","central routing")
-Route53Resolver(r53,"Route 53 Resolver","hybrid DNS")
-VirtualPrivateCloud(shared,"Shared Services VPC","resolver endpoints")
+TransitGateway(tgw,"Transit Gateway","hybrid routing hub")
+VirtualPrivateCloud(shared,"Shared Services VPC","DNS services")
 VirtualPrivateCloud(app,"Application VPC","private workloads")
-PrivateLink(pl,"AWS PrivateLink","private service access")
 CloudWatch(cw,"CloudWatch","DNS and network telemetry")
-onprem --> dx
-onprem --> vpn
 dx --> tgw
 vpn --> tgw
 tgw --> shared
-shared --> r53
-r53 --> app
-app --> pl
+tgw --> app
+shared --> app
 shared --> cw
 app --> cw
 @enduml
