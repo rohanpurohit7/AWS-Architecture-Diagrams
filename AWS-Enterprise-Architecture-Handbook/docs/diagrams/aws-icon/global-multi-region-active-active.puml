@@ -1,23 +1,23 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/SecurityIdentityCompliance/all.puml
-!include AWSPuml/ApplicationIntegration/all.puml
-!include AWSPuml/Compute/all.puml
-!include AWSPuml/Database/all.puml
-!include AWSPuml/Storage/all.puml
-!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/SecurityIdentityCompliance/WAF.puml
+!include AWSPuml/NetworkingContentDelivery/APIGateway.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/Database/DynamoDB.puml
+!include AWSPuml/Storage/SimpleStorageService.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
 left to right direction
-WAF(waf,"AWS WAF")
-APIGateway(apiA,"Regional API A")
-APIGateway(apiB,"Regional API B")
-Lambda(appA,"Application Region A")
-Lambda(appB,"Application Region B")
-DynamoDB(ddbA,"DynamoDB Region A")
-DynamoDB(ddbB,"DynamoDB Region B")
-SimpleStorageService(s3A,"S3 Region A")
-SimpleStorageService(s3B,"S3 Region B")
-CloudWatch(cw,"CloudWatch Health")
+WAF(waf,"AWS WAF","global web protection")
+APIGateway(apiA,"Regional API A","Region A")
+APIGateway(apiB,"Regional API B","Region B")
+Lambda(appA,"Application Region A","compute")
+Lambda(appB,"Application Region B","compute")
+DynamoDB(ddbA,"DynamoDB Region A","global data")
+DynamoDB(ddbB,"DynamoDB Region B","global data")
+SimpleStorageService(s3A,"S3 Region A","objects")
+SimpleStorageService(s3B,"S3 Region B","replicated objects")
+CloudWatch(cw,"CloudWatch","health monitoring")
 waf --> apiA
 waf --> apiB
 apiA --> appA
