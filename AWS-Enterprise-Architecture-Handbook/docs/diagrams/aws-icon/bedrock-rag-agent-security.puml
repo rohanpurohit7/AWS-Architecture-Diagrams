@@ -8,21 +8,21 @@
 !include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
 
-APIGateway(api, "RAG API", "governed entry")
-Lambda(fn, "RAG Orchestrator", "Bedrock request adapter")
-EventBridge(bus, "Retrieval Events", "request routing")
-SimpleQueueService(q, "Retrieval Queue", "buffer and retry")
-StepFunctions(sf, "Approval Workflow", "human approval")
-DynamoDB(db, "Session State", "request metadata")
-SimpleStorageService(s3, "Approved Knowledge", "knowledge corpus")
-CloudWatch(cw, "RAG Telemetry", "logs and alarms")
+APIGateway(svc01, "RAG API", "Amazon API Gateway", "Governed request entry point")
+Lambda(svc02, "RAG Orchestrator", "AWS Lambda", "Bedrock request and retrieval orchestration")
+EventBridge(svc03, "Retrieval Events", "Amazon EventBridge", "Retrieval and workflow event routing")
+SimpleQueueService(svc04, "Retrieval Queue", "Amazon SQS", "Buffered retrieval work")
+StepFunctions(svc05, "Approval Workflow", "AWS Step Functions", "Human approval for consequential actions")
+DynamoDB(svc06, "Session State", "Amazon DynamoDB", "Request and session metadata")
+SimpleStorageService(svc07, "Approved Knowledge", "Amazon S3", "Approved knowledge corpus")
+CloudWatch(svc08, "RAG Telemetry", "Amazon CloudWatch", "Application and model telemetry")
 
-api --> fn
-fn --> bus
-bus --> q
-q --> sf
-sf --> db
-sf --> s3
-fn --> cw
-sf --> cw
+svc01 --> svc02
+svc02 --> svc03
+svc03 --> svc04
+svc04 --> svc05
+svc05 --> svc06
+svc05 --> svc07
+svc02 --> svc08
+svc05 --> svc08
 @enduml
