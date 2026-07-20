@@ -1,0 +1,37 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/NetworkingContentDelivery/Route53.puml
+!includeurl AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!includeurl AWSPuml/Compute/AutoScaling.puml
+!includeurl AWSPuml/Compute/ElasticComputeCloud.puml
+!includeurl AWSPuml/Database/Aurora.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+left to right direction
+Route53(r53,"Route 53 Health Routing")
+CloudFront(cf,"CloudFront")
+rectangle "Primary Region" {
+  AutoScaling(asg1,"Application ASG")
+  Aurora(db1,"Aurora Primary")
+  DynamoDB(ddb1,"DynamoDB")
+  SimpleStorageService(s31,"S3")
+}
+rectangle "Recovery Region" {
+  AutoScaling(asg2,"Warm Standby ASG")
+  Aurora(db2,"Aurora Secondary")
+  DynamoDB(ddb2,"Global Tables")
+  SimpleStorageService(s32,"Replicated S3")
+}
+CloudWatch(cw,"CloudWatch / Synthetic Checks")
+r53 --> cf
+cf --> asg1
+cf --> asg2
+asg1 --> db1
+asg2 --> db2
+db1 --> db2
+ddb1 --> ddb2
+s31 --> s32
+cw --> r53
+@enduml
