@@ -1,0 +1,53 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/Route53.puml
+!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
+!include AWSPuml/NetworkingContentDelivery/VPNConnection.puml
+!include AWSPuml/NetworkingContentDelivery/DirectConnect.puml
+!include AWSPuml/NetworkingContentDelivery/PrivateLink.puml
+!include AWSPuml/Compute/EC2.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+
+left to right direction
+skinparam shadowing false
+
+rectangle "On-premises data center" {
+  EC2(dns, "Enterprise DNS / applications")
+}
+
+DirectConnect(dx, "Direct Connect")
+VPNConnection(vpn, "Site-to-Site VPN backup")
+TransitGateway(tgw, "Transit Gateway")
+Route53(r53, "Route 53 Resolver")
+PrivateLink(pl, "PrivateLink / interface endpoints")
+
+rectangle "AWS Network Account" {
+  rectangle "Shared Services VPC 10.0.0.0/16" {
+    rectangle "Private subnets" {
+      EC2(resolver, "Resolver endpoints")
+    }
+  }
+}
+
+rectangle "AWS Workload Account" {
+  rectangle "Application VPC 10.20.0.0/16" {
+    rectangle "Private app subnets" {
+      EC2(app, "Private application")
+    }
+  }
+}
+
+CloudWatch(cw, "CloudWatch / DNS query logs")
+
+dns --> dx
+dns --> vpn
+dx --> tgw
+vpn --> tgw
+tgw --> resolver
+resolver --> r53
+r53 --> app
+app --> pl
+cw .. resolver
+cw .. r53
+@enduml
