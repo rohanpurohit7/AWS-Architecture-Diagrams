@@ -2,19 +2,25 @@
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-DirectConnect(dx,"Direct Connect","primary hybrid path")
-SitetoSiteVPN(vpn,"Site-to-Site VPN","backup path")
-TransitGateway(tgw,"Transit Gateway","hybrid routing hub")
-VirtualPrivateCloud(shared,"Shared Services VPC","DNS services")
-VirtualPrivateCloud(app,"Application VPC","private workloads")
-CloudWatch(cw,"CloudWatch","DNS and network telemetry")
+
+DirectConnect(dx, "Direct Connect", "primary hybrid path")
+SitetoSiteVPN(vpn, "Site-to-Site VPN", "resilient backup")
+TransitGateway(tgw, "Transit Gateway", "hybrid routing hub")
+VirtualPrivateCloud(inspect, "Shared Services VPC", "central DNS services")
+NetworkFirewall(nfw, "DNS Inspection", "controlled hybrid inspection")
+VPCNATGateway(nat, "Controlled Egress", "managed outbound path")
+VirtualPrivateCloud(prod, "Application VPC", "private workloads")
+VirtualPrivateCloud(shared, "DNS Services", "private name resolution")
+CloudWatch(cw, "CloudWatch", "DNS and network telemetry")
+
 dx --> tgw
 vpn --> tgw
+tgw --> inspect
+inspect --> nfw
+nfw --> nat
+tgw --> prod
 tgw --> shared
-tgw --> app
-shared --> app
-shared --> cw
-app --> cw
+nfw --> cw
 @enduml
