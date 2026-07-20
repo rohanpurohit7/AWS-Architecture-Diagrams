@@ -1,36 +1,21 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/Analytics/KinesisDataStreams.puml
-!include AWSPuml/Analytics/Glue.puml
-!include AWSPuml/Analytics/Athena.puml
-!include AWSPuml/Analytics/OpenSearchService.puml
-!include AWSPuml/ApplicationIntegration/EventBridge.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/Storage/SimpleStorageService.puml
-!include AWSPuml/SecurityIdentityCompliance/KeyManagementService.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 left to right direction
-KinesisDataStreams(kds,"Kinesis Data Streams","stream ingestion")
-EventBridge(eb,"EventBridge","event ingestion")
-Lambda(fn,"Lambda","validation and enrichment")
-SimpleStorageService(raw,"S3 Raw Zone","immutable events")
-Glue(glue,"AWS Glue","catalog and ETL")
-SimpleStorageService(curated,"S3 Curated Zone","analytics-ready data")
-Athena(athena,"Athena","serverless SQL")
-OpenSearchService(os,"OpenSearch","indexed exploration")
-KeyManagementService(kms,"AWS KMS","encryption keys")
-CloudWatch(cw,"CloudWatch","pipeline telemetry")
-kds --> fn
-eb --> fn
-fn --> raw
-raw --> glue
-glue --> curated
-curated --> athena
-curated --> os
-kms .. raw
-kms .. curated
-cw .. fn
-cw .. glue
-cw .. os
+EventBridge(events,"EventBridge","event ingestion")
+Lambda(process,"Lambda","validation and enrichment")
+SimpleStorageService(raw,"S3","raw data zone")
+SimpleStorageService(curated,"S3","curated data zone")
+DynamoDB(catalog,"DynamoDB","pipeline metadata")
+CloudWatch(cw,"CloudWatch","pipeline health and alarms")
+events --> process
+process --> raw
+raw --> curated
+process --> catalog
+process --> cw
 @enduml
