@@ -1,13 +1,9 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/NetworkingContentDelivery/Route53.puml
-!include AWSPuml/NetworkingContentDelivery/TransitGateway.puml
-!include AWSPuml/NetworkingContentDelivery/VPNConnection.puml
-!include AWSPuml/NetworkingContentDelivery/DirectConnect.puml
-!include AWSPuml/NetworkingContentDelivery/PrivateLink.puml
-!include AWSPuml/Compute/EC2.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
 
 left to right direction
 skinparam shadowing false
@@ -17,9 +13,9 @@ rectangle "On-premises data center" {
 }
 
 DirectConnect(dx, "Direct Connect")
-VPNConnection(vpn, "Site-to-Site VPN backup")
+SitetoSiteVPN(vpn, "Site-to-Site VPN backup")
 TransitGateway(tgw, "Transit Gateway")
-Route53(r53, "Route 53 Resolver")
+Route53Resolver(r53, "Route 53 Resolver")
 PrivateLink(pl, "PrivateLink / interface endpoints")
 
 rectangle "AWS Network Account" {
