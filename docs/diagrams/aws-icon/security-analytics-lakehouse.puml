@@ -1,20 +1,14 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
-!includeurl AWSPuml/AWSCommon.puml
-!includeurl AWSPuml/Analytics/KinesisDataStreams.puml
-!includeurl AWSPuml/Analytics/ManagedStreamingForApacheKafka.puml
-!includeurl AWSPuml/Storage/SimpleStorageService.puml
-!includeurl AWSPuml/SecurityIdentityCompliance/SecurityLake.puml
-!includeurl AWSPuml/Analytics/Glue.puml
-!includeurl AWSPuml/Analytics/EMR.puml
-!includeurl AWSPuml/Analytics/OpenSearchService.puml
-!includeurl AWSPuml/SecurityIdentityCompliance/SecurityHub.puml
-!includeurl AWSPuml/SecurityIdentityCompliance/Detective.puml
-!includeurl AWSPuml/ArtificialIntelligence/SageMaker.puml
-!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/Analytics/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+
 left to right direction
 KinesisDataStreams(kds,"Kinesis Streams")
-ManagedStreamingForApacheKafka(msk,"Amazon MSK / Kafka")
+ManagedStreamingforApacheKafka(msk,"Amazon MSK / Kafka")
 SecurityLake(sl,"Security Lake")
 SimpleStorageService(s3,"S3 Data Lake")
 Glue(glue,"Glue Catalog / ETL")
