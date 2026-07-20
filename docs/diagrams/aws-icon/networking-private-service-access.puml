@@ -1,22 +1,20 @@
 @startuml
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
-!includeurl AWSPuml/AWSCommon.puml
-!includeurl AWSPuml/NetworkingContentDelivery/PrivateLink.puml
-!includeurl AWSPuml/NetworkingContentDelivery/Endpoint.puml
-!includeurl AWSPuml/NetworkingContentDelivery/NetworkLoadBalancer.puml
-!includeurl AWSPuml/Compute/ElasticComputeCloud.puml
-!includeurl AWSPuml/Containers/ElasticKubernetesService.puml
-!includeurl AWSPuml/NetworkingContentDelivery/TransitGateway.puml
-!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Containers/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+
 left to right direction
 rectangle "Consumer VPC 10.10.0.0/16" {
   ElasticKubernetesService(consumer,"Consumer EKS")
-  Endpoint(ep,"Interface VPC Endpoint")
+  VPCEndpoints(ep,"Interface VPC Endpoint")
 }
 rectangle "Provider VPC 10.40.0.0/16" {
   PrivateLink(pl,"Endpoint Service")
-  NetworkLoadBalancer(nlb,"NLB")
-  ElasticComputeCloud(app,"Private Service")
+  ElasticLoadBalancingNetworkLoadBalancer(nlb,"NLB")
+  EC2(app,"Private Service")
 }
 TransitGateway(tgw,"Optional TGW for other networks")
 CloudWatch(cw,"CloudWatch")
