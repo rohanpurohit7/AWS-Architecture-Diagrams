@@ -5,22 +5,22 @@
 !include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
 
-DirectConnect(dx, "Workload Connectivity", "approved private path")
-SitetoSiteVPN(vpn, "Backup Connectivity", "resilient alternate path")
-TransitGateway(tgw, "Transit Gateway", "central routing hub")
-VirtualPrivateCloud(inspect, "Inspection VPC", "central security boundary")
-NetworkFirewall(nfw, "Network Firewall", "stateful inspection")
-VPCNATGateway(nat, "NAT Gateway", "controlled egress")
-VirtualPrivateCloud(prod, "Application VPC", "private workloads")
-VirtualPrivateCloud(shared, "Data VPC", "private analytics workloads")
-CloudWatch(cw, "CloudWatch", "network and firewall telemetry")
+DirectConnect(svc01, "Workload Connectivity", "AWS Direct Connect", "Approved primary private path")
+SitetoSiteVPN(svc02, "Backup Connectivity", "AWS Site-to-Site VPN", "Resilient alternate path")
+TransitGateway(svc03, "Transit Gateway", "AWS Transit Gateway", "Central routing hub")
+VirtualPrivateCloud(svc04, "Inspection VPC", "Amazon VPC", "Central security boundary")
+NetworkFirewall(svc05, "Network Firewall", "AWS Network Firewall", "Stateful inspection")
+VPCNATGateway(svc06, "NAT Gateway", "Amazon VPC NAT Gateway", "Controlled egress")
+VirtualPrivateCloud(svc07, "Application VPC", "Amazon VPC", "Private application workloads")
+VirtualPrivateCloud(svc08, "Data VPC", "Amazon VPC", "Private analytics workloads")
+CloudWatch(svc09, "CloudWatch", "Amazon CloudWatch", "Network and firewall telemetry")
 
-dx --> tgw
-vpn --> tgw
-tgw --> inspect
-inspect --> nfw
-nfw --> nat
-tgw --> prod
-tgw --> shared
-nfw --> cw
+svc01 --> svc03
+svc02 --> svc03
+svc03 --> svc04
+svc04 --> svc05
+svc05 --> svc06
+svc03 --> svc07
+svc03 --> svc08
+svc05 --> svc09
 @enduml
