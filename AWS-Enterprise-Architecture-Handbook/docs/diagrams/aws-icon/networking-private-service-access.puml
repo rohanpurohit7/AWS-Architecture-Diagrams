@@ -2,14 +2,25 @@
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-VirtualPrivateCloud(consumer,"Consumer VPC","private client workloads")
-VirtualPrivateCloud(provider,"Provider VPC","private shared service")
-TransitGateway(tgw,"Transit Gateway","optional shared routing")
-CloudWatch(cw,"CloudWatch","connection and service telemetry")
-consumer --> provider
-consumer ..> tgw
-provider --> cw
-consumer --> cw
+
+DirectConnect(dx, "Private Consumer Path", "approved private ingress")
+SitetoSiteVPN(vpn, "Backup Private Path", "resilient alternate path")
+TransitGateway(tgw, "Transit Gateway", "optional shared routing")
+VirtualPrivateCloud(inspect, "Consumer VPC", "private client workloads")
+NetworkFirewall(nfw, "Service Inspection", "policy enforcement")
+VPCNATGateway(nat, "Controlled Egress", "managed outbound path")
+VirtualPrivateCloud(prod, "Provider VPC", "private shared service")
+VirtualPrivateCloud(shared, "Endpoint Services", "private service access")
+CloudWatch(cw, "CloudWatch", "connection and service telemetry")
+
+dx --> tgw
+vpn --> tgw
+tgw --> inspect
+inspect --> nfw
+nfw --> nat
+tgw --> prod
+tgw --> shared
+nfw --> cw
 @enduml
