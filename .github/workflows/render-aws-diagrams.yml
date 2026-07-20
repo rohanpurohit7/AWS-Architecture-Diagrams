@@ -2,12 +2,6 @@ name: Render AWS Architecture Diagrams
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ master ]
-    paths:
-      - 'docs/diagrams/aws-icon/**'
-      - 'scripts/render-aws-diagrams.sh'
-      - '.github/workflows/render-aws-diagrams.yml'
 
 permissions:
   contents: write
@@ -43,19 +37,20 @@ jobs:
           java -jar "$RUNNER_TEMP/plantuml.jar" -version
 
       - name: Render AWS-icon PlantUML sources to SVG
-        run: bash scripts/render-aws-diagrams.sh
+        run: bash AWS-Enterprise-Architecture-Handbook/scripts/render-aws-diagrams.sh
 
       - name: Validate rendered outputs
         shell: bash
         run: |
           set -euo pipefail
-          source_count=$(find docs/diagrams/aws-icon -maxdepth 1 -type f -name '*.puml' | wc -l)
-          svg_count=$(find docs/diagrams/rendered -maxdepth 1 -type f -name '*.svg' | wc -l)
+          ROOT="AWS-Enterprise-Architecture-Handbook"
+          source_count=$(find "$ROOT/docs/diagrams/aws-icon" -maxdepth 1 -type f -name '*.puml' | wc -l)
+          svg_count=$(find "$ROOT/docs/diagrams/rendered" -maxdepth 1 -type f -name '*.svg' | wc -l)
           echo "PlantUML source count: $source_count"
           echo "Rendered SVG count: $svg_count"
           test "$source_count" -gt 0
           test "$svg_count" -eq "$source_count"
-          test -f docs/diagrams/README.md
+          test -f "$ROOT/docs/diagrams/README.md"
 
       - name: Commit rendered diagrams
         shell: bash
@@ -63,7 +58,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/diagrams/rendered docs/diagrams/README.md
+          git add AWS-Enterprise-Architecture-Handbook/docs/diagrams/rendered AWS-Enterprise-Architecture-Handbook/docs/diagrams/README.md
           if git diff --cached --quiet; then
             echo "No rendered diagram changes to commit."
           else
