@@ -6,21 +6,23 @@
 !include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-APIGateway(global,"API Gateway","global application entry")
-Lambda(appA,"Lambda","Region A application")
-Lambda(appB,"Lambda","Region B application")
-DynamoDB(dataA,"DynamoDB","Region A state")
-DynamoDB(dataB,"DynamoDB","Region B state")
-SimpleStorageService(s3A,"S3","Region A objects")
-SimpleStorageService(s3B,"S3","Region B replicated objects")
-CloudWatch(cw,"CloudWatch","regional health")
-global --> appA
-global --> appB
-appA --> dataA
-appB --> dataB
-dataA <--> dataB
-s3A <--> s3B
-appA --> cw
-appB --> cw
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "Global Application Entry", "multi-region ingress")
+Lambda(fn, "Regional Application", "active application processing")
+EventBridge(bus, "Replication Events", "cross-region event routing")
+SimpleQueueService(q, "Replication Queue", "buffer and retry")
+StepFunctions(sf, "Failover Workflow", "regional failover orchestration")
+DynamoDB(db, "Global State", "replicated application state")
+SimpleStorageService(s3, "Replicated Objects", "cross-region object storage")
+CloudWatch(cw, "Regional Health", "health and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
 @enduml
