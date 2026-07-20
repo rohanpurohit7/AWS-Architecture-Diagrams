@@ -3,19 +3,26 @@
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/ApplicationIntegration/all.puml
 !include AWSPuml/Compute/all.puml
-!include AWSPuml/Storage/all.puml
 !include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
 !include AWSPuml/ManagementGovernance/all.puml
-left to right direction
-EventBridge(events,"EventBridge","event ingestion")
-Lambda(process,"Lambda","validation and enrichment")
-SimpleStorageService(raw,"S3","raw data zone")
-SimpleStorageService(curated,"S3","curated data zone")
-DynamoDB(catalog,"DynamoDB","pipeline metadata")
-CloudWatch(cw,"CloudWatch","pipeline health and alarms")
-events --> process
-process --> raw
-raw --> curated
-process --> catalog
-process --> cw
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "Data Ingestion API", "governed ingestion entry")
+Lambda(fn, "Data Processor", "validation and enrichment")
+EventBridge(bus, "Data Events", "event routing")
+SimpleQueueService(q, "Processing Queue", "buffer and retry")
+StepFunctions(sf, "Data Workflow", "pipeline orchestration")
+DynamoDB(db, "Pipeline State", "processing metadata")
+SimpleStorageService(s3, "Data Lake", "raw and curated objects")
+CloudWatch(cw, "Pipeline Telemetry", "logs and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
 @enduml
