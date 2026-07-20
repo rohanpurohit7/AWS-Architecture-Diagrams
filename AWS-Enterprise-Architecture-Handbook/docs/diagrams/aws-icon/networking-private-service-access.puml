@@ -1,0 +1,21 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+!include AWSPuml/Containers/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+left to right direction
+rectangle "Consumer VPC 10.10.0.0/16" {
+  ElasticKubernetesService(consumer,"Consumer EKS")
+}
+rectangle "Provider VPC 10.40.0.0/16" {
+  VirtualPrivateCloud(provider,"Private service network")
+}
+PrivateLink(pl,"AWS PrivateLink")
+TransitGateway(tgw,"Optional Transit Gateway")
+CloudWatch(cw,"CloudWatch")
+consumer --> pl
+pl --> provider
+provider --> cw
+tgw ..> consumer
+@enduml
