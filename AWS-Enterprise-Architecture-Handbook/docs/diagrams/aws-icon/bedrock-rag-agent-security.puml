@@ -1,0 +1,26 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/ArtificialIntelligence/all.puml
+!include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+!include AWSPuml/SecurityIdentityCompliance/all.puml
+!include AWSPuml/ManagementGovernance/all.puml
+left to right direction
+APIGateway(api,"API Gateway")
+Lambda(orchestrator,"Prompt and Tool Orchestrator")
+Bedrock(bedrock,"Amazon Bedrock")
+OpenSearchService(vector,"Vector Index")
+SimpleStorageService(knowledge,"Approved Knowledge Corpus")
+StepFunctions(sfn,"Approval Workflow")
+CloudWatch(cw,"Model and App Telemetry")
+api --> orchestrator
+orchestrator --> bedrock
+orchestrator --> vector
+knowledge --> vector
+bedrock --> sfn
+orchestrator --> cw
+bedrock --> cw
+@enduml
