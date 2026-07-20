@@ -1,15 +1,28 @@
 @startuml
 !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v23.0/dist
 !include AWSPuml/AWSCommon.puml
-!include AWSPuml/ManagementGovernance/all.puml
 !include AWSPuml/ApplicationIntegration/all.puml
+!include AWSPuml/Compute/all.puml
+!include AWSPuml/Database/all.puml
 !include AWSPuml/Storage/all.puml
-left to right direction
-CloudWatch(metrics,"CloudWatch","EKS metrics and logs")
-SimpleNotificationService(alerts,"SNS","alert routing")
-SimpleStorageService(archive,"S3","long-term telemetry archive")
-CloudWatch(dashboards,"CloudWatch","dashboards and alarms")
-metrics --> dashboards
-dashboards --> alerts
-metrics --> archive
+!include AWSPuml/ManagementGovernance/all.puml
+!include AWSPuml/NetworkingContentDelivery/all.puml
+
+APIGateway(api, "Observability Entry", "metrics and logs intake")
+Lambda(fn, "Telemetry Processor", "metrics transformation")
+EventBridge(bus, "Observability Events", "event routing")
+SimpleQueueService(q, "Telemetry Queue", "buffer and retry")
+StepFunctions(sf, "Alert Workflow", "alert orchestration")
+DynamoDB(db, "Alert State", "incident metadata")
+SimpleStorageService(s3, "Telemetry Archive", "long-term retention")
+CloudWatch(cw, "CloudWatch", "dashboards and alarms")
+
+api --> fn
+fn --> bus
+bus --> q
+q --> sf
+sf --> db
+sf --> s3
+fn --> cw
+sf --> cw
 @enduml
